@@ -4,24 +4,24 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-	  "start": "npm-run-all --parallel serve:dev lint:watch",
-	  "serve:dev": "webpack-dev-server --host 0.0.0.0 --config ./webpack.config.babel.js",
-	  "build": "yarn run babel-node server/build && exit 0;",
-	  "lint": "esw webpack.config.babel.js app --color",
-	  "lint:watch": "yarn run lint -- --watch",
-	  "test": "jest --watchAll",
-	  "test:build": "jest --bail --coverage --verbose",
-	  "test:commit": "jest --bail --notify"
+		"start": "npm-run-all --parallel serve:dev lint:watch",
+		"serve:dev": "webpack-dev-server --host 0.0.0.0 --config ./webpack.config.babel.js",
+		"build": "yarn run babel-node server/build && exit 0;",
+		"lint": "esw webpack.config.babel.js app --color",
+		"lint:watch": "yarn run lint -- --watch",
+		"test": "jest --watchAll",
+		"test:build": "jest --bail --coverage --verbose",
+		"test:commit": "jest --bail --notify"
 	},
 	"keywords": [],
 	"author": "andresmijares <andresmijares@gmail.com>",
 	"license": "ISC",
 	"pre-commit": {
-	  "run": [
-		"lint",
-		"test:commit"
-	  ],
-	  "colors": true
+		"run": [
+			"lint",
+			"test:commit"
+		],
+		"colors": true
 	},
 	"jest": {
 		"globals": {
@@ -112,6 +112,7 @@
 		"ramda": "^0.24.1",
 		"react": "^15.6.1",
 		"react-dom": "^15.6.1",
+		"react-redux": "^5.0.6",
 		"react-router": "^4.2.0",
 		"redux": "^3.7.2",
 		"redux-saga": "^0.15.6"

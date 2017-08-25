@@ -31,6 +31,7 @@ export default {
 						components: path.resolve(__dirname, 'app/components/'),
 						containers: path.resolve(__dirname, 'app/containers/'),
 						generics: path.resolve(__dirname, 'app/generics/'),
+						data: path.resolve(__dirname, 'app/data/'),
 				},
 		},
 		devtool: 'source-map',
