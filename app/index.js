@@ -23,6 +23,17 @@ const render = () => {
 setTimeout(render, 0)
 
 setTimeout(() => {
-		store.dispatch({type: 'fetch_users'})
 		store.dispatch({type: 'fetch_groups'})
+		store.dispatch({type: 'fetch_users'})
+
+		setTimeout(() => {
+				store.dispatch({
+						type: 'create_users',
+						user: {
+								name: 'Andres',
+								lastName: 'Mijares',
+								email: 'andresmijares',
+								groups: ['1'],
+						}})
+		}, 0)
 }, 500)

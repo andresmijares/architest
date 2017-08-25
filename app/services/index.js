@@ -15,6 +15,7 @@ export const reducers = {
 function* rootSagas () {
 		yield [
 				takeLatest('fetch_users', usersServices.fetch),
+				takeLatest('create_users', usersServices.create),
 				takeLatest('fetch_groups', groupsServices.fetch),
 		]
 }

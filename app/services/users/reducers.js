@@ -10,6 +10,8 @@ function data (state = {}, {type, payload}) {
 		switch (type) {
 				case 'fetch_users_success' :
 						return merge(state, payload.data)
+				case 'create_users_success' :
+						return merge(state, payload.data)
 				default:
 						return state
 		}
@@ -19,6 +21,8 @@ function ids (state = [], {type, payload}) {
 		switch (type) {
 				case 'fetch_users_success' :
 						return mergeAndUniq(payload.ids, state)
+				case 'create_users_success' :
+						return mergeAndUniq(state, payload.ids)
 				default:
 						return state
 		}
