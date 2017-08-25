@@ -9,7 +9,7 @@
 		"build": "yarn run babel-node server/build && exit 0;",
 		"lint": "esw webpack.config.babel.js app --color",
 		"lint:watch": "yarn run lint -- --watch",
-		"test": "jest --watchAll",
+		"test": "jest --watchAll --coverage",
 		"test:build": "jest --bail --coverage --verbose",
 		"test:commit": "jest --bail --notify"
 	},
@@ -29,13 +29,15 @@
 		},
 		"verbose": false,
 		"testEnvironment": "node",
-		"collectCoverageFrom": [],
+		"collectCoverageFrom": [
+		  "app/services/**/*.js"
+		],
 		"coverageThreshold": {
 			"global": {
-				"branches": 70,
-				"functions": 30,
-				"lines": 50,
-				"statements": 50
+				"branches": 0,
+				"functions": 0,
+				"lines": 0,
+				"statements": 0
 			}
 		}
 	},

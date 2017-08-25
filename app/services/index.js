@@ -4,6 +4,7 @@ import users from './users/reducers'
 import error from './errors/reducers'
 
 import * as usersServices from './users/sagas'
+import * as groupsServices from './groups/sagas'
 
 export const reducers = {
 		groups,
@@ -14,6 +15,7 @@ export const reducers = {
 function* rootSagas () {
 		yield [
 				takeLatest('fetch_users', usersServices.fetch),
+				takeLatest('fetch_groups', groupsServices.fetch),
 		]
 }
 

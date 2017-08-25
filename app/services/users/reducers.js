@@ -1,7 +1,11 @@
 import { combineReducers } from 'redux'
 import {merge} from 'ramda'
 import {mergeAndUniq} from '../helpers'
-
+/*
+* This also shares the same patter with the users reducers..
+* given more time, a good refactor can be done to create a factory that avoids this code repetition
+* if proven both cases can be coupled.
+*/
 function data (state = {}, {type, payload}) {
 		switch (type) {
 				case 'fetch_users_success' :

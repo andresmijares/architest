@@ -24,4 +24,5 @@ setTimeout(render, 0)
 
 setTimeout(() => {
 		store.dispatch({type: 'fetch_users'})
+		store.dispatch({type: 'fetch_groups'})
 }, 500)
