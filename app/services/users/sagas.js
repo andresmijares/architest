@@ -1,7 +1,7 @@
 import {getUsers} from 'data'
 import {sagaGenerator, normalize, removeManager} from '../helpers'
-import {put, select} from 'redux-saga/effects'
-import {curriedValidator as userValidator, addGroupToUser, removeGroupFromUser} from './helpers'
+import {put, select, fork} from 'redux-saga/effects'
+import {curriedValidator as userValidator, addGroupToUser, removeGroupFromUser, updateGroupsWithoutUser} from './helpers'
 
 /*
 * This is not an atomic service,
@@ -12,9 +12,6 @@ import {curriedValidator as userValidator, addGroupToUser, removeGroupFromUser} 
 /* params {
 		@ Int => Indicate a sequence to support pagination in case it's available
  */
-
-export const fetch = sagaGenerator('users', 'fetch', getUsers)
-
 // export function* fetch ({sec}) {
 // 		try {
 // 				yield put({type: 'fetch_users_start'})
@@ -25,6 +22,8 @@ export const fetch = sagaGenerator('users', 'fetch', getUsers)
 // 				yield put({type: 'fetch_users_error', error})
 // 		}
 // }
+
+export const fetch = sagaGenerator('users', 'fetch', getUsers)
 
 export function* create ({user}) {
 		try {
@@ -50,13 +49,17 @@ export function* create ({user}) {
 export function* remove ({user}) {
 		try {
 				yield put({type: 'remove_users_start'})
-				const {id} = user
+				const {id, groups} = user
 				const state = yield select(({users}) => users)
 				const listUpdated = removeManager(state, id)
+
 				yield put({
 						type: 'remove_users_success',
 						payload: normalize(Object.values(listUpdated)),
 				})
+
+				/* Remove from groups list */
+				yield fork(removeUserFromGroups, groups, id)
 		} catch (error) {
 				yield put({type: 'remove_users_error', error: error.message})
 		}
@@ -84,4 +87,12 @@ export function* removeGroup ({user, group}) {
 		} catch (error) {
 				yield put({type: 'removeGroup_users_error', error: error.message})
 		}
+}
+
+function* removeUserFromGroups (groupsList, user) {
+		yield put({type: 'removeUserFromGroups_users_start'})
+		const {data} = yield select(({groups}) => groups)
+		/* check if the group has users assigned */
+		const groupsUpdatedWithoutRemovedUser = updateGroupsWithoutUser(groupsList, data, user)
+		yield put({type: 'removeUserFromGroups_users_success', payload: normalize(Object.values(groupsUpdatedWithoutRemovedUser))})
 }

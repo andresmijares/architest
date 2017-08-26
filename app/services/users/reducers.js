@@ -9,15 +9,12 @@ import {mergeAndUniq} from '../helpers'
 function data (state = {}, {type, payload}) {
 		switch (type) {
 				case 'fetch_users_success' :
-						return merge(state, payload.data)
 				case 'create_users_success' :
+				case 'assignGroup_users_success' :
+				case 'removeGroup_users_success' :
 						return merge(state, payload.data)
 				case 'remove_users_success' :
 						return payload.data
-				case 'assignGroup_users_success' :
-						return merge(state, payload.data)
-				case 'removeGroup_users_success' :
-						return merge(state, payload.data)
 				default:
 						return state
 		}
@@ -26,22 +23,19 @@ function data (state = {}, {type, payload}) {
 function ids (state = [], {type, payload}) {
 		switch (type) {
 				case 'fetch_users_success' :
-						return mergeAndUniq(payload.ids, state)
 				case 'create_users_success' :
+				case 'assignGroup_users_success' :
+				case 'removeGroup_users_success' :
 						return mergeAndUniq(state, payload.ids)
 				case 'remove_users_success' :
 						return payload.ids
-				case 'assignGroup_users_success' :
-						return mergeAndUniq(state, payload.ids)
-				case 'removeGroup_users_success' :
-						return mergeAndUniq(state, payload.ids)
 				default:
 						return state
 		}
 }
 
-function loading (state = false, action) {
-		switch (action.type) {
+function loading (state = false, {type}) {
+		switch (type) {
 				case 'fetch_users' :
 						return true
 				case 'fetch_users_error' :

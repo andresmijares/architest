@@ -22,19 +22,33 @@ const render = () => {
 /* prevent FOUC https://stackoverflow.com/a/43902734 */
 setTimeout(render, 0)
 
-setTimeout(() => {
-		store.dispatch({type: 'fetch_groups'})
-		store.dispatch({type: 'fetch_users'})
-
-		setTimeout(() => {
-				store.dispatch({
-						type: 'removeGroup_users',
-						group: {
-							id: '1',
-						},
-						user: {
-								id: '1',
-						},
-				})
-		}, 0)
-}, 500)
+// setTimeout(() => {
+// 		store.dispatch({type: 'fetch_groups'})
+// 		store.dispatch({type: 'fetch_users'})
+//
+// 		setTimeout(() => {
+// 				store.dispatch({
+// 						type: 'matchWithUsers_groups',
+// 						group: {
+// 								id: "1",
+// 						},
+// 				})
+//
+// 				store.dispatch({
+// 						type: 'matchWithUsers_groups',
+// 						group: {
+// 								id: "2",
+// 						},
+// 				})
+//
+//
+//
+// 				store.dispatch({
+// 						type: 'remove_users',
+// 						user: {
+// 								id: "1",
+// 								groups: [1, 2],
+// 						},
+// 				})
+// 		}, 0)
+// }, 500)

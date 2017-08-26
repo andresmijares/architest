@@ -1,4 +1,4 @@
-import {pipe, curry, has} from 'ramda'
+import {pipe, curry, has, isNil} from 'ramda'
 import {assignId, mergeAndUniq} from '../helpers'
 
 const checkIfItBringsAGroup = (user) => {
@@ -36,6 +36,19 @@ export const addGroupToUser = (arr, id) =>
 
 export const removeGroupFromUser = (arr, id) =>
 		arr.filter(groupId => groupId !== parseInt(id)).sort()
+
+/*
+	groupsList: Array of the groups that user had
+	state: current groups state
+	user: user ID
+*/
+export const updateGroupsWithoutUser = (userGroups, state, user) =>
+		userGroups
+		.filter(g => !isNil(state[g].users))
+		.reduce((all, group) => {
+				all[group].users = all[group].users.filter(g => g !== parseInt(user))
+				return all
+		}, Object.assign({}, state))
 
 /* More validation can be added in the future */
 const userValidator = (state) => {

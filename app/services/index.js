@@ -22,6 +22,7 @@ function* rootSagas () {
 				takeLatest('fetch_groups', groupsServices.fetch),
 				takeLatest('create_groups', groupsServices.create),
 				takeLatest('remove_groups', groupsServices.remove),
+				takeLatest('matchWithUsers_groups', groupsServices.matchWithUsers),
 		]
 }
 

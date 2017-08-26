@@ -5,8 +5,9 @@ import {mergeAndUniq} from '../helpers'
 function data (state = {}, {type, payload}) {
 		switch (type) {
 				case 'fetch_groups_success' :
-						return merge(state, payload.data)
 				case 'create_groups_success' :
+				case 'matchWithUsers_groups_success' :
+				case 'removeUserFromGroups_users_success' :
 						return merge(state, payload.data)
 				case 'remove_groups_success' :
 						return payload.data
@@ -18,8 +19,9 @@ function data (state = {}, {type, payload}) {
 function ids (state = [], {type, payload}) {
 		switch (type) {
 				case 'fetch_groups_success' :
-						return mergeAndUniq(payload.ids, state)
 				case 'create_groups_success' :
+				case 'matchWithUsers_groups_success' :
+				case 'removeUserFromGroups_users_success' :
 						return mergeAndUniq(payload.ids, state)
 				case 'remove_groups_success' :
 						return payload.ids
@@ -28,8 +30,8 @@ function ids (state = [], {type, payload}) {
 		}
 }
 
-function loading (state = false, action) {
-		switch (action.type) {
+function loading (state = false, {type}) {
+		switch (type) {
 				case 'fetch_groups' :
 						return true
 				case 'fetch_groups_error' :
