@@ -25,6 +25,16 @@ import {curriedValidator as userValidator, addGroupToUser, removeGroupFromUser, 
 
 export const fetch = sagaGenerator('users', 'fetch', getUsers)
 
+/*
+* The same pattern will apply for all the services (sagas)
+* We bring the current state to the process,
+* We make all the modifications we need,
+* We change the state.
+* --
+* Every operation is a pure function so we can test em as a whole.
+* We do not test Implementation Details only states based on IO.
+* Each service should be very descriptive at the eye.
+* */
 export function* create ({user}) {
 		try {
 				yield put({type: 'create_users_start'})
@@ -58,7 +68,7 @@ export function* remove ({user}) {
 						payload: normalize(Object.values(listUpdated)),
 				})
 
-				/* Remove from groups list */
+				/* Remove from user from groups lists */
 				yield fork(removeUserFromGroups, groups, id)
 		} catch (error) {
 				yield put({type: 'remove_users_error', error: error.message})

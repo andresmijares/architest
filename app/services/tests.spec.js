@@ -44,7 +44,7 @@ describe('Service Generics Helpers', () => {
 						const output = helpers.createDictionary(input)
 						expect(output).toEqual(first)
 				})
-				it('should persist data when called with an init value', () => {
+				it('should persist data in state when called with an init value', () => {
 						const one = users.slice(0, 3)
 						const two = users.slice(3, 6)
 						const prev = helpers.createDictionary(one)
