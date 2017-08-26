@@ -42,6 +42,19 @@ export function sagaGenerator (service, action, callback) {
 		}
 }
 
+export const assignId = (data) => {
+		return Object.assign({}, data, {id: uuid()})
+}
+
+export const removeManager = ({data, ids}, id) => {
+		return ids
+		.filter(userId => userId !== id)
+		.reduce((all, i) => {
+				all[i] = data[i]
+				return all
+		}, {})
+}
+
 export function uuid () {
 		let i
 		let random

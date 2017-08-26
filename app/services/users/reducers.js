@@ -12,6 +12,12 @@ function data (state = {}, {type, payload}) {
 						return merge(state, payload.data)
 				case 'create_users_success' :
 						return merge(state, payload.data)
+				case 'remove_users_success' :
+						return payload.data
+				case 'assignGroup_users_success' :
+						return merge(state, payload.data)
+				case 'removeGroup_users_success' :
+						return merge(state, payload.data)
 				default:
 						return state
 		}
@@ -22,6 +28,12 @@ function ids (state = [], {type, payload}) {
 				case 'fetch_users_success' :
 						return mergeAndUniq(payload.ids, state)
 				case 'create_users_success' :
+						return mergeAndUniq(state, payload.ids)
+				case 'remove_users_success' :
+						return payload.ids
+				case 'assignGroup_users_success' :
+						return mergeAndUniq(state, payload.ids)
+				case 'removeGroup_users_success' :
 						return mergeAndUniq(state, payload.ids)
 				default:
 						return state

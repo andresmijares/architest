@@ -6,6 +6,10 @@ function data (state = {}, {type, payload}) {
 		switch (type) {
 				case 'fetch_groups_success' :
 						return merge(state, payload.data)
+				case 'create_groups_success' :
+						return merge(state, payload.data)
+				case 'remove_groups_success' :
+						return payload.data
 				default:
 						return state
 		}
@@ -15,6 +19,10 @@ function ids (state = [], {type, payload}) {
 		switch (type) {
 				case 'fetch_groups_success' :
 						return mergeAndUniq(payload.ids, state)
+				case 'create_groups_success' :
+						return mergeAndUniq(payload.ids, state)
+				case 'remove_groups_success' :
+						return payload.ids
 				default:
 						return state
 		}

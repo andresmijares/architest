@@ -1,25 +1,35 @@
 import {getGroups} from 'data'
-import {sagaGenerator} from '../helpers'
+import {sagaGenerator, normalize, removeManager} from '../helpers'
+import {put, select} from 'redux-saga/effects'
+import {validateGroup} from './helpers'
 
-/*
-	* This is not an atomic service,
-	* it's meant it does destroy the state but add/update and persist records
-	* This come handy when we need to use pagination
-	* */
-
-/* params {
-	@ Int => Indicate a sequence to support pagination in case it's available
-	*/
 export const fetch = sagaGenerator('groups', 'fetch', getGroups)
 
-// export function* fetch ({sec}) {
-// 		try {
-// 				yield put({type: 'fetch_groups_start'})
-// 				const users = yield call(getGroups, sec)
-// 				/* place it on the state */
-// 				yield put({type: 'fetch_groups_success', payload: normalize(users)})
-// 		} catch (error) {
-// 				yield put({type: 'fetch_groups_error', error})
-// 		}
-// }
+export function* create ({group}) {
+		try {
+				yield put({type: 'create_groups_start'})
+				const groupValidated = validateGroup(group)
+				/* if we get here, all good! */
+				yield put({
+						type: 'create_groups_success',
+						payload: normalize([groupValidated]),
+				})
+		} catch (error) {
+				yield put({type: 'create_groups_error', error: error.message})
+		}
+}
 
+export function* remove ({group}) {
+		try {
+				yield put({type: 'remove_groups_start'})
+				const {id} = group
+				const state = yield select(({groups}) => groups)
+				const listUpdated = removeManager(state, id)
+				yield put({
+						type: 'remove_groups_success',
+						payload: normalize(Object.values(listUpdated)),
+				})
+		} catch (error) {
+				yield put({type: 'remove_groups_error', error: error.message})
+		}
+}

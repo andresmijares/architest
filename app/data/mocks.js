@@ -75,4 +75,8 @@ export const groups = [
 				name: 'Beer',
 				id: 2,
 		},
+		{
+				name: 'Wine',
+				id: 3,
+		},
 ]

@@ -1,7 +1,7 @@
 import {getUsers} from 'data'
-import {sagaGenerator, normalize} from '../helpers'
+import {sagaGenerator, normalize, removeManager} from '../helpers'
 import {put, select} from 'redux-saga/effects'
-import {curriedValidator as userValidator} from './helpers'
+import {curriedValidator as userValidator, addGroupToUser, removeGroupFromUser} from './helpers'
 
 /*
 * This is not an atomic service,
@@ -44,5 +44,44 @@ export function* create ({user}) {
 					})
 		} catch (error) {
 				yield put({type: 'create_users_error', error: error.message})
+		}
+}
+
+export function* remove ({user}) {
+		try {
+				yield put({type: 'remove_users_start'})
+				const {id} = user
+				const state = yield select(({users}) => users)
+				const listUpdated = removeManager(state, id)
+				yield put({
+						type: 'remove_users_success',
+						payload: normalize(Object.values(listUpdated)),
+				})
+		} catch (error) {
+				yield put({type: 'remove_users_error', error: error.message})
+		}
+}
+
+export function* assignGroup ({user, group}) {
+		try {
+				yield put({type: 'assignGroup_users_start'})
+				const {data} = yield select(({users}) => users)
+				const userWithGroup = data[user.id]
+				userWithGroup['groups'] = addGroupToUser(userWithGroup['groups'], group['id'])
+				yield put({type: 'assignGroup_users_success', payload: normalize([userWithGroup])})
+		} catch (error) {
+				yield put({type: 'assignGroup_users_error', error: error.message})
+		}
+}
+
+export function* removeGroup ({user, group}) {
+		try {
+				yield put({type: 'removeGroup_users_start'})
+				const {data} = yield select(({users}) => users)
+				const userWithGroup = data[user.id]
+				userWithGroup['groups'] = removeGroupFromUser(userWithGroup['groups'], group.id)
+				yield put({type: 'removeGroup_users_success', payload: normalize([userWithGroup])})
+		} catch (error) {
+				yield put({type: 'removeGroup_users_error', error: error.message})
 		}
 }

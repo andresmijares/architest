@@ -28,12 +28,13 @@ setTimeout(() => {
 
 		setTimeout(() => {
 				store.dispatch({
-						type: 'create_users',
+						type: 'removeGroup_users',
+						group: {
+							id: '1',
+						},
 						user: {
-								name: 'Andres',
-								lastName: 'Mijares',
-								email: 'andresmijares',
-								groups: ['1'],
-						}})
+								id: '1',
+						},
+				})
 		}, 0)
 }, 500)

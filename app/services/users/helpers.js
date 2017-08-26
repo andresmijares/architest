@@ -1,5 +1,5 @@
 import {pipe, curry, has} from 'ramda'
-import {uuid} from '../helpers'
+import {assignId, mergeAndUniq} from '../helpers'
 
 const checkIfItBringsAGroup = (user) => {
 		if (user.groups.length > 0) {
@@ -31,9 +31,11 @@ const validateAttributes = (user) => {
 			}
 }
 
-const assignIdToUser = (user) => {
-		return Object.assign({}, user, {id: uuid()})
-}
+export const addGroupToUser = (arr, id) =>
+		mergeAndUniq(arr, [parseInt(id)]).sort()
+
+export const removeGroupFromUser = (arr, id) =>
+		arr.filter(groupId => groupId !== parseInt(id)).sort()
 
 /* More validation can be added in the future */
 const userValidator = (state) => {
@@ -44,7 +46,7 @@ const userValidator = (state) => {
 				checkIfItBringsAGroup,
 				checkIfGroupIsValid(state),
 				/* all went good, assign an id */
-				assignIdToUser,
+				assignId,
 		)
 }
 
