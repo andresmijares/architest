@@ -48,7 +48,9 @@ export const assignId = (data) => {
 
 export const removeManager = ({data, ids}, id) => {
 		return ids
-		.filter(userId => userId !== id)
+		.filter(userId => {
+				return String(userId) !== String(id) /* avoid BE ids vs object keys dict */
+		})
 		.reduce((all, i) => {
 				all[i] = data[i]
 				return all

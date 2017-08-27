@@ -1,4 +1,4 @@
-import {pipe, curry, has, isNil} from 'ramda'
+import {pipe, curry, isNil, difference} from 'ramda'
 import {assignId, mergeAndUniq} from '../helpers'
 
 const checkIfItBringsAGroup = (user) => {
@@ -8,18 +8,24 @@ const checkIfItBringsAGroup = (user) => {
 		throw new Error('User needs to be associated at least with one group')
 }
 
+const checkIfInState = (a, state) => a.every(i => state.indexOf(i) !== -1)
+
 const checkIfGroupIsValid = curry((state, user) => {
-		if (has(user.groups, state)) {
+		if (checkIfInState(user.groups, state)) {
 				return user
 		} else if (state.length < 1) {
 				return user /* for testing only... offline capability maybe ? */
 		}
-		throw new Error('One of more groups associated do not exists.')
+		if (difference(user.groups, state).length > 0) {
+				throw new Error(`You tried to create an user assigned to following invalid groups ids ${difference(user.groups, state).join(' ,')}`)
+		} else {
+				throw new Error('One of more groups associated do not exists.')
+		}
 })
 
 const validateAttributes = (user) => {
 			/* the rules are hardcoded but they should not, a config file would be good... #yolo */
-			const rules = ['name', 'lastName', 'email']
+			const rules = ['name']
 			const check = rules.every(rule => {
       return user[rule]
 			})

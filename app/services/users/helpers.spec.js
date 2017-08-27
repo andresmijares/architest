@@ -3,9 +3,8 @@ import {removeManager, normalize} from '../helpers'
 
 let user = {
 		name: 'Andres',
-		lastName: 'Mijares',
 		email: 'andresmijares',
-		groups: [1],
+		groups: [1, 2],
 }
 
 describe('User Service', () => {
@@ -13,7 +12,7 @@ describe('User Service', () => {
 				const state = []
 				const curried = helpers.curriedValidator(state)
 				const output = curried(user)
-				expect(output).toMatchObject({'name': user.name, 'lastName': user.lastName, 'groups': user.groups})
+				expect(output).toMatchObject({'name': user.name, 'groups': user.groups})
 		})
 		it('Should Throw if not valid', () => {
 				const unvalidUser = Object.assign({}, user, {groups: []})
@@ -28,7 +27,7 @@ describe('User Service', () => {
 				const curried = helpers.curriedValidator(state)
 				const output = curried(user)
 				const id = output['id']
-				expect(output).toMatchObject({'name': user.name, 'lastName': user.lastName, 'groups': user.groups})
+				expect(output).toMatchObject({'name': user.name, 'groups': user.groups})
 				const updateState = normalize([output])
 				const removedUser = removeManager(updateState, id)
 				expect(removedUser).toEqual({})
@@ -47,7 +46,7 @@ describe('User Service', () => {
 				const curried = helpers.curriedValidator(state)
 				const output = curried(user)
 				output.groups = helpers.removeGroupFromUser(output['groups'], groupId)
-				expect(output.groups).toHaveLength(0)
+				expect(output.groups).toHaveLength(1)
 		})
 		it('Should remove an user from the groups assigned', () => {
 				/* Create the user */
@@ -56,6 +55,11 @@ describe('User Service', () => {
 								name: 'Pizza',
 								id: 1,
 								users: [1, 2, 3],
+						},
+						2: {
+								name: 'Beer',
+								id: 2,
+								users: [1],
 						},
 				}
 				const state = []
@@ -69,5 +73,6 @@ describe('User Service', () => {
 				expect(mockGroup[1].users).toEqual([1, 2, 3])
 				const groupWithOutUser = helpers.updateGroupsWithoutUser(user.groups, mockGroup, 1)
 				expect(groupWithOutUser[1].users).toEqual([2, 3])
+				expect(groupWithOutUser[2].users).toEqual([])
 		})
 })

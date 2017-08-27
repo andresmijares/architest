@@ -34,6 +34,7 @@ export function* remove ({group}) {
 		}
 }
 
+/* group -> a group object */
 export function* matchWithUsers ({group}) {
 		/* I saw (and thought) about this at very last...
 		*  interesting cause this looks like real life where designers

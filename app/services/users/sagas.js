@@ -60,16 +60,17 @@ export function* remove ({user}) {
 		try {
 				yield put({type: 'remove_users_start'})
 				const {id, groups} = user
+
 				const state = yield select(({users}) => users)
 				const listUpdated = removeManager(state, id)
+
+				/* Remove from user from groups lists */
+				yield fork(removeUserFromGroups, groups, id)
 
 				yield put({
 						type: 'remove_users_success',
 						payload: normalize(Object.values(listUpdated)),
 				})
-
-				/* Remove from user from groups lists */
-				yield fork(removeUserFromGroups, groups, id)
 		} catch (error) {
 				yield put({type: 'remove_users_error', error: error.message})
 		}
@@ -87,22 +88,36 @@ export function* assignGroup ({user, group}) {
 		}
 }
 
+/* receives a user, find the current state of this user
+* modifies the state with the group info
+* place it again into the state
+* */
 export function* removeGroup ({user, group}) {
 		try {
 				yield put({type: 'removeGroup_users_start'})
 				const {data} = yield select(({users}) => users)
-				const userWithGroup = data[user.id]
+				const userWithGroup = Object.assign({}, data[user.id]) /* ensure we preserve this information */
+
 				userWithGroup['groups'] = removeGroupFromUser(userWithGroup['groups'], group.id)
+
+				/* Remove the user from groups lists associated with this user */
+				yield fork(removeUserFromGroups, user.groups, user.id)
+
+				/* finish placing the state */
 				yield put({type: 'removeGroup_users_success', payload: normalize([userWithGroup])})
 		} catch (error) {
 				yield put({type: 'removeGroup_users_error', error: error.message})
 		}
 }
-
+/* groupsList -> a list of groups associated with a user
+ * user -> user object
+* */
 function* removeUserFromGroups (groupsList, user) {
 		yield put({type: 'removeUserFromGroups_users_start'})
 		const {data} = yield select(({groups}) => groups)
 		/* check if the group has users assigned */
+
 		const groupsUpdatedWithoutRemovedUser = updateGroupsWithoutUser(groupsList, data, user)
+
 		yield put({type: 'removeUserFromGroups_users_success', payload: normalize(Object.values(groupsUpdatedWithoutRemovedUser))})
 }
