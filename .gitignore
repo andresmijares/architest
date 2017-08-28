@@ -35,7 +35,8 @@ node_modules
 #dist folder
 /dist
 /stage
-# /build
+/build
+
 
 # Selenium
 /reports
