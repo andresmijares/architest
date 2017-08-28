@@ -9,7 +9,7 @@ import CompressionPlugin from 'compression-webpack-plugin'
 import path from 'path'
 
 const enviroment = (process.argv[process.argv.length - 1])
-const basePath = '/clients/'
+const basePath = '/'
 
 export default {
 		entry: {
@@ -20,7 +20,7 @@ export default {
 				app: path.resolve(__dirname, 'app/index.js'),
 		},
 		output: {
-				path: path.resolve(__dirname, (enviroment === '--production') ? 'build' : 'stage'),
+				path: path.resolve(__dirname, 'build'),
 				filename: '[name].[chunkhash].js',
 				publicPath: basePath,
 		},
@@ -103,7 +103,6 @@ export default {
 				}),
 				new HtmlWebPackPlugin({
 						template: './app/index.ejs',
-						customConfig: `${basePath}config.js`,
 						minify: {
 								removeComments: true,
 								collapseWhitespace: true,

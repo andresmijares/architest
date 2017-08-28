@@ -69,4 +69,8 @@ const userValidator = (state) => {
 		)
 }
 
+/* Since a few nice validations are against the state to protect the store
+* we pre-add the state for convenience in the future
+* this make testing way easier cause we can mock the state in the shape we want to.
+* */
 export const curriedValidator = curry(userValidator)

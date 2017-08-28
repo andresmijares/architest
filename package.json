@@ -30,7 +30,7 @@
 		"verbose": false,
 		"testEnvironment": "node",
 		"collectCoverageFrom": [
-		  "app/services/**/*.js"
+			"app/services/**/*.js"
 		],
 		"coverageThreshold": {
 			"global": {
@@ -114,6 +114,7 @@
 		"ramda": "^0.24.1",
 		"react": "^15.6.1",
 		"react-dom": "^15.6.1",
+		"react-drag-and-drop": "^2.4.0",
 		"react-redux": "^5.0.6",
 		"react-router": "^4.2.0",
 		"redux": "^3.7.2",

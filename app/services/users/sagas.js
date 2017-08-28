@@ -1,6 +1,7 @@
 import {getUsers} from 'data'
 import {sagaGenerator, normalize, removeManager} from '../helpers'
 import {put, select, fork} from 'redux-saga/effects'
+import {matchWithGroups} from '../groups/sagas'
 import {curriedValidator as userValidator, addGroupToUser, removeGroupFromUser, updateGroupsWithoutUser} from './helpers'
 
 /*
@@ -82,6 +83,8 @@ export function* assignGroup ({user, group}) {
 				const {data} = yield select(({users}) => users)
 				const userWithGroup = data[user.id]
 				userWithGroup['groups'] = addGroupToUser(userWithGroup['groups'], group['id'])
+				/* Ensure we update the groups as well */
+				yield fork(matchWithGroups, user)
 				yield put({type: 'assignGroup_users_success', payload: normalize([userWithGroup])})
 		} catch (error) {
 				yield put({type: 'assignGroup_users_error', error: error.message})

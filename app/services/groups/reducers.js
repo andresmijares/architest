@@ -8,6 +8,7 @@ function data (state = {}, {type, payload}) {
 				case 'create_groups_success' :
 				case 'matchWithUsers_groups_success' :
 				case 'removeUserFromGroups_users_success' :
+				case 'addUserToGroupsList_groups_success' :
 						return merge(state, payload.data)
 				case 'remove_groups_success' :
 						return payload.data
@@ -22,6 +23,7 @@ function ids (state = [], {type, payload}) {
 				case 'create_groups_success' :
 				case 'matchWithUsers_groups_success' :
 				case 'removeUserFromGroups_users_success' :
+				case 'addUserToGroupsList_groups_success' :
 						return mergeAndUniq(payload.ids, state)
 				case 'remove_groups_success' :
 						return payload.ids

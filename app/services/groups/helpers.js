@@ -1,5 +1,5 @@
-import {assignId} from '../helpers'
-import {pipe} from 'ramda'
+import {assignId, mergeAndUniq} from '../helpers'
+import {pipe, isNil} from 'ramda'
 
 export const validateGroup = pipe(
 		/* any other validation should be added here */
@@ -11,3 +11,14 @@ export const assingUsersToGroup = (group, users) => {
 				users,
 		})
 }
+
+export const matchWithGroupsHelper = (user, groups) => user
+		.groups
+		.filter((g) => !isNil(groups.data[g].users))
+		.map(n => {
+				return Object.assign({}, groups.data[n])
+		})
+		.map(f => {
+				f.users = mergeAndUniq(f.users, [user.id])
+				return f
+		})

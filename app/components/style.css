@@ -74,3 +74,12 @@ body {
 	font-size: 15px !important;
 }
 
+.user__drag-drop {
+	width: 100%;
+	border: 2px dashed #d3d3d3;
+	color: #d3d3d3;
+	padding: 30px 10px;
+	height: 80px;
+	text-align: center;
+}
+

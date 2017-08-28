@@ -1,7 +1,7 @@
 import {getGroups} from 'data'
 import {sagaGenerator, normalize, removeManager} from '../helpers'
 import {put, select} from 'redux-saga/effects'
-import {validateGroup, assingUsersToGroup} from './helpers'
+import {validateGroup, assingUsersToGroup, matchWithGroupsHelper} from './helpers'
 
 export const fetch = sagaGenerator('groups', 'fetch', getGroups)
 
@@ -67,4 +67,19 @@ export function* matchWithUsers ({group}) {
 		} catch (error) {
 				yield put({type: 'matchWithUsers_groups_error', error: error.message})
 		}
+}
+
+/* the groups, find those with users lists, add the user id
+	* users => id & groups
+	* groups state
+	* -
+	* Possible Tech debt...
+	* */
+export function* matchWithGroups (user) {
+		yield put({type: 'addUserToGroupsList_groups_start'})
+		const groups = yield select(({groups}) => groups)
+
+		const nextGroups = matchWithGroupsHelper(user, groups)
+
+		yield put({type: 'addUserToGroupsList_groups_success', payload: normalize(nextGroups)})
 }

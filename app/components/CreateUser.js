@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const rules = ['name', 'groups']
 const validate = (form) => {
@@ -18,10 +19,11 @@ const CreateUser = ({handleForm, handleCheckbox, form, groups, submit}) => {
 						<div className='form-group'>
 								<label htmlFor='name'>{`Name`}</label>
 								<input type='text' onChange={handleForm} className='form-control'
-									id='name' placeholder='Name' value={form['name'] || ''} name='name' />
+									id='name' placeholder='Name' value={form['name'] || ''}
+									name='name' />
 						</div>
 						<div className='form-group'>
-							<label htmlFor='name'>{`Groups`}  </label>
+							<label htmlFor='name'>{`Groups`} </label>
 								<div className='checkbox'>
 										{groups.ids.map((id, i) => {
 												return <label key={i} style={{marginRight: '10px'}}>
@@ -34,10 +36,19 @@ const CreateUser = ({handleForm, handleCheckbox, form, groups, submit}) => {
 								{Object.keys(form['groups']).length === 0 && <label style={{color: 'red'}}>{` Select at least one group`}</label>}
 						</div>
 						<div className='form-group'>
-								<button type='submit' className='btn btn-default' disabled={!validate(form)} onClick={submit}>{`Submit`}</button>
+								<button type='submit' className='btn btn-default' disabled={!validate(form)}
+									onClick={submit}>{`Submit`}</button>
 						</div>
 				</form>
 		</div>)
+}
+
+CreateUser.propTypes = {
+		handleForm: PropTypes.func.isRequired,
+		handleCheckbox: PropTypes.func.isRequired,
+		form: PropTypes.object.isRequired,
+		submit: PropTypes.func.isRequired,
+		groups: PropTypes.object.isRequired,
 }
 
 export default CreateUser

@@ -1,5 +1,6 @@
 import 'babel-polyfill' /* Support for IE11 */
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Provider, connect } from 'react-redux'
 import ReactDOM from 'react-dom'
 import store from './generics/store'
@@ -9,6 +10,10 @@ import CreateUser from 'components/CreateUser'
 import 'components/style.css'
 import {isNil} from 'ramda'
 
+/*
+* If given more time, this should be separated into different
+* views instead a monolithic component
+* */
 class App extends React.PureComponent {
 		state = {
 				user: null,
@@ -43,7 +48,7 @@ class App extends React.PureComponent {
 						user,
 				})
 		}
-		deleteGroup (e, group) {
+		removeGroup (e, group) {
 				e.stopPropagation()
 				this.props.dispatch({
 						type: 'remove_groups',
@@ -83,11 +88,21 @@ class App extends React.PureComponent {
 						})
 				}
 		}
+		onDrop (group) {
+				return function ({users}) {
+						const user = this.props.users.data[users]
+						this.props.dispatch({
+								type: 'assignGroup_users',
+								user,
+								group,
+						})
+				}.bind(this)
+		}
 		render () {
 				const {users, groups, dispatch} = this.props
 				return (
 						<div className='container'>
-								{this.props.error  && <div className='row'>
+								{this.props.error && <div className='row'>
 									<div className='col-md-8'>
 										<div className='app__detail'>
 											{`${this.props.error}`}
@@ -120,8 +135,9 @@ class App extends React.PureComponent {
 														title={this.state.group.name}
 														groups={groups}
 														dispatch={dispatch}
-														deleteGroup={this.deleteGroup.bind(this)}
+														deleteGroup={this.removeGroup.bind(this)}
 														removeGroupFromUser={this.removeGroupFromUser.bind(this)}
+														onDrop={this.onDrop.bind(this)}
 														users={users} />}
 												<Groups change={this.change.bind(this)} title={`Groups`} groups={groups}/>
 										</div>
@@ -154,6 +170,12 @@ const render = () => {
 		)
 }
 
+App.propTypes = {
+		dispatch: PropTypes.func.isRequired,
+		users: PropTypes.object.isRequired,
+		groups: PropTypes.object.isRequired,
+		error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
+}
+
 /* prevent FOUC https://stackoverflow.com/a/43902734 */
 setTimeout(render, 0)
-

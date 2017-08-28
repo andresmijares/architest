@@ -1,12 +1,20 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {equals, isNil} from 'ramda'
+import { Draggable } from 'react-drag-and-drop'
 
-const User = ({user, changeUser, removeUser}) =>
+const User = ({user, changeUser, removeUser}) => <Draggable type='users' data={user.id} >
 	<li className='user__item' onClick={(e) => changeUser(e, user)}>{user['name']}
 		<span
 			role='button'
 			onClick={(e) => removeUser(e, user)}
-			className='user__delete'>{`delete`}</span></li>
+			className='user__delete'>{`delete`}</span></li></Draggable>
+
+User.propTypes = {
+	user: PropTypes.object.isRequired,
+		changeUser: PropTypes.func.isRequired,
+		removeUser: PropTypes.func.isRequired,
+}
 
 class List extends React.PureComponent {
 		shouldComponentUpdate (nextProps) {
@@ -65,3 +73,19 @@ function showGroups (user, removeGroupFromUser, data) {
 			</ul>
 		)
 }
+
+List.propTypes = {
+		change: PropTypes.func.isRequired,
+		toggle: PropTypes.func.isRequired,
+		title: PropTypes.string.isRequired,
+		users: PropTypes.object.isRequired,
+		removeUser: PropTypes.func.isRequired,
+}
+
+DetailUser.propTypes = {
+		user: PropTypes.object.isRequired,
+		title: PropTypes.string.isRequired,
+		removeGroupFromUser: PropTypes.func.isRequired,
+		groups: PropTypes.object.isRequired,
+}
+

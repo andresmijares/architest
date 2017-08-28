@@ -5,7 +5,7 @@ export const createDictionary = (data = [], init = {}) => {
 		return data.reduce((dict, i) => {
 				dict[i.id] = i
 				return dict
-		}, init)
+		}, Object.assign({}, init))
 }
 
 const assembleNormalized = (data) => {

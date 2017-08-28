@@ -1,5 +1,7 @@
 import React from 'react'
-import {equals, isNil} from 'ramda'
+import PropTypes from 'prop-types'
+import {equals} from 'ramda'
+import { Droppable } from 'react-drag-and-drop'
 
 class Groups extends React.PureComponent {
 		shouldComponentUpdate (nextProps) {
@@ -24,9 +26,15 @@ class Groups extends React.PureComponent {
 		}
 }
 
+Groups.propTypes = {
+		change: PropTypes.func.isRequired,
+		title: PropTypes.string.isRequired,
+		groups: PropTypes.object.isRequired,
+}
+
 export default Groups
 
-const DetailPresentation = ({group, users, groups, title, removeGroupFromUser, deleteGroup}) => {
+const DetailPresentation = ({group, users, groups, title, removeGroupFromUser, deleteGroup, onDrop}) => {
 		const {data} = users
 		const id = group.id
 		const names = groups.data[id]['users'] || []
@@ -34,16 +42,26 @@ const DetailPresentation = ({group, users, groups, title, removeGroupFromUser, d
 				<div className='app__detail'>
 						<h2 className='app__title'>{title}</h2>
 					{names.length > 0 ? showUsers(data, group, names, removeGroupFromUser) : showDeleteGroup(deleteGroup, group)}
-					{/* Drag and drop for users */}
+					<Droppable types={['users']} onDrop={onDrop(group)}><div className='user__drag-drop'>{`Drop user here to assign to this group`}</div></Droppable>
 				</div>
 		)
+}
+
+DetailPresentation.propTypes = {
+		group: PropTypes.object.isRequired,
+		groups: PropTypes.object.isRequired,
+		users: PropTypes.object.isRequired,
+		title: PropTypes.string.isRequired,
+		removeGroupFromUser: PropTypes.func.isRequired,
+		deleteGroup: PropTypes.func.isRequired,
+		onDrop: PropTypes.func.isRequired,
 }
 
 function showDeleteGroup (deleteGroup, group) {
 		return <button onClick={(e) => { deleteGroup(e, group) }}>{`Delete Group`}</button>
 }
 
-function showUsers (data, group, names, removeGroupFromUser) {
+function showUsers (data, names, group, removeGroupFromUser) {
 		return (<div>
 				<p>{`Users: `}</p>
 				<ul>
@@ -58,7 +76,7 @@ function showUsers (data, group, names, removeGroupFromUser) {
 
 /* Match users to group */
 const lifecycle = (Component) => {
-		return class lifecycle extends React.PureComponent {
+		class lifecycle extends React.PureComponent {
 				componentWillMount () {
 						/* runs the first time */
 						this.props.dispatch({type: 'matchWithUsers_groups', group: this.props.group})
@@ -73,6 +91,14 @@ const lifecycle = (Component) => {
 						return <Component {...this.props} />
 				}
 		}
+
+		lifecycle.propTypes = {
+				dispatch: PropTypes.func.isRequired,
+				groups: PropTypes.object.isRequired,
+				group: PropTypes.object.isRequired,
+		}
+
+		return lifecycle
 }
 
 export const DetailGroup = lifecycle(DetailPresentation)
