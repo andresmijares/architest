@@ -78,6 +78,17 @@ pattern allow us to add and remove different validations with ease, for sample:
 	* Also sometimes is useful to validate against the state, when can easily curried the state which allows to test in
 	without coupling to the redux store different operations and scenarios.
 	
+👮🏽 I really wanted to demostrate the importance of this pattern so I left and error on purpose to show how extra layer of protections are benefitials,
+you can reproduce it as follows:
+
+	* Click on `create` to display the create user form.
+	* Select `Wine` and put a name, but **do not** click Submit.
+	* Click on `Wine` in the menu list.
+	* Delete `Wine`
+		- At this point the wine checkbox should desapear, however, it was already saved on the state of the component.
+	* Click save user.
+		- We double check at service runtime so we can catch the error and do not create the user cause the group does not exists anymore.
+		
 The pattern used for `groups` and `users` is the same, both can share the same structure therefore, there is not much to talk here,
 the code is very descriptive. `Listin` -> `Operation` -> `Store Updated`.
 
