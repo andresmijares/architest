@@ -67,11 +67,11 @@ export const updateGroupsWithoutUser = (userGroups, state, user) =>
 const userValidator = (state) => {
 		return pipe(
 				/* validate rules (attributes) */
-				validateAttributes,
+				validateAttributes, /* checks the user has all the required props */
 				/* validate groups */
+				checkIfItBringsAGroup, /* This is sample of a Business rule that tricky users can avoid if we rely on on the UI validation */
 				ensureGroupsIdsAreIntegers, /* sometime due to UI management they can be strings (coming from object keys) */
-				checkIfItBringsAGroup,
-				checkIfGroupIsValid(state),
+				checkIfGroupIsValid(state), /* this check if the group exists on the stage... this could be extended to the BE as well */
 				/* all went good, assign an id */
 				assignId,
 		)
