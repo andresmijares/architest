@@ -47,6 +47,8 @@ export function* create ({user}) {
 				* */
 				const groups = yield select(({groups}) => groups.ids)
 				const userValidated = userValidator(groups)(user)
+				/* Ensure we update the groups as well */
+				yield fork(matchWithGroups, user)
 				/* if we get here, all good! */
 				yield put({
 						type: 'create_users_success',
@@ -119,7 +121,6 @@ function* removeUserFromGroups (groupsList, user) {
 		yield put({type: 'removeUserFromGroups_users_start'})
 		const {data} = yield select(({groups}) => groups)
 		/* check if the group has users assigned */
-
 		const groupsUpdatedWithoutRemovedUser = updateGroupsWithoutUser(groupsList, data, user)
 
 		yield put({type: 'removeUserFromGroups_users_success', payload: normalize(Object.values(groupsUpdatedWithoutRemovedUser))})

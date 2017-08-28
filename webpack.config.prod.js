@@ -55,8 +55,7 @@ export default {
 						{ test: /(\.css|\.scss)$/,
 								loader: ExtractTextPlugin.extract({
 										use: [
-												'css-loader?sourceMap&modules&importLoaders=2&localIdentName=[name]__[local]___[hash:base64:5]',
-												'sass-loader?sourceMap',
+												'css-loader?sourceMap',
 										],
 								}),
 						},

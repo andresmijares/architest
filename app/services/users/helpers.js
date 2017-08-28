@@ -23,6 +23,13 @@ const checkIfGroupIsValid = curry((state, user) => {
 		}
 })
 
+const ensureGroupsIdsAreIntegers = (user) => {
+		const groups = user.groups || []
+		return Object.assign({}, user, {
+				groups: groups.map(id => parseInt(id)),
+		})
+}
+
 const validateAttributes = (user) => {
 			/* the rules are hardcoded but they should not, a config file would be good... #yolo */
 			const rules = ['name']
@@ -64,6 +71,7 @@ const userValidator = (state) => {
 				/* validate groups */
 				checkIfItBringsAGroup,
 				checkIfGroupIsValid(state),
+				ensureGroupsIdsAreIntegers, /* sometime due to UI management they can be strings (coming from object keys) */
 				/* all went good, assign an id */
 				assignId,
 		)
