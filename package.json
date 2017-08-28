@@ -9,8 +9,8 @@
 		"build": "yarn run babel-node server/build && exit 0;",
 		"lint": "esw webpack.config.babel.js app --color",
 		"lint:watch": "yarn run lint -- --watch",
-		"test": "jest --watchAll",
-		"test:build": "jest --bail --coverage --verbose",
+		"test:dev": "jest --watchAll",
+		"test": "jest --bail --coverage --verbose",
 		"test:commit": "jest --bail --notify"
 	},
 	"keywords": [],
