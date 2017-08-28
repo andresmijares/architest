@@ -1,5 +1,5 @@
 {
-	"name": "internations",
+	"name": "architest",
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
@@ -30,14 +30,14 @@
 		"verbose": false,
 		"testEnvironment": "node",
 		"collectCoverageFrom": [
-			"app/services/**/*.js"
+			"app/services/users/helpers.js"
 		],
 		"coverageThreshold": {
 			"global": {
-				"branches": 0,
-				"functions": 0,
-				"lines": 0,
-				"statements": 0
+				"branches": 50,
+				"functions": 50,
+				"lines": 50,
+				"statements": 50
 			}
 		}
 	},
