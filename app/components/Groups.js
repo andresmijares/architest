@@ -65,7 +65,7 @@ function showUsers (data, names, group, removeGroupFromUser) {
 		return (<div>
 				<p>{`Users: `}</p>
 				<ul>
-				{names.map((u, i) =>
+				{names.users.map((u, i) =>
 						<li key={i}>
 							{`${data[u].name}`}
 							<span className='user__delete' onClick={(e) => { removeGroupFromUser(data[u], group) }}>{`delete`}</span>
