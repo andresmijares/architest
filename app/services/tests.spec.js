@@ -1,5 +1,4 @@
 import * as helpers from './helpers'
-import {users} from 'data'
 import {merge} from 'ramda'
 
 const first = {
@@ -36,6 +35,39 @@ const second = {
 				groups: [1],
 		},
 }
+
+const users = [
+		{
+				name: 'Andres Mijares',
+				id: 1,
+				groups: [1, 2],
+		},
+		{
+				name: 'Grace Mijares',
+				id: 2,
+				groups: [1],
+		},
+		{
+				name: 'Karen Serfaty',
+				id: 3,
+				groups: [2],
+		},
+		{
+				name: 'Grace Mijares',
+				id: 4,
+				groups: [1],
+		},
+		{
+				name: 'Karen Serfaty',
+				id: 5,
+				groups: [2],
+		},
+		{
+				name: 'Grace Mijares',
+				id: 6,
+				groups: [1],
+		},
+]
 
 describe('Service Generics Helpers', () => {
 		describe('Reducers Helpers / Normalizers', () => {

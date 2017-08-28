@@ -15,53 +15,43 @@ export const users = [
 				groups: [2],
 		},
 		{
-				name: 'Grace Mijares',
+				name: 'Silvina Nerenberg',
 				id: 4,
 				groups: [1],
 		},
 		{
-				name: 'Karen Serfaty',
+				name: 'Ricky Martin',
 				id: 5,
 				groups: [2],
 		},
 		{
-				name: 'Grace Mijares',
+				name: 'Errique Iglesias',
 				id: 6,
 				groups: [1],
 		},
 		{
-				name: 'Karen Serfaty',
+				name: 'Cameron Diaz',
 				id: 7,
 				groups: [2],
 		},
 		{
-				name: 'Karen Serfaty',
+				name: 'Jon Snow',
 				id: 8,
 				groups: [2],
 		},
 		{
-				name: 'Grace Mijares',
+				name: 'T. Lannister',
 				id: 9,
 				groups: [1],
 		},
 		{
-				name: 'Karen Serfaty',
+				name: 'Ragna Logthbrook (whatever)',
 				id: 10,
 				groups: [2],
 		},
 		{
-				name: 'Karen Serfaty',
+				name: 'Rolo Logthbrook',
 				id: 11,
-				groups: [2],
-		},
-		{
-				name: 'Grace Mijares',
-				id: 12,
-				groups: [1],
-		},
-		{
-				name: 'Karen Serfaty',
-				id: 13,
 				groups: [2],
 		},
 ]
