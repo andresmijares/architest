@@ -11,7 +11,7 @@ export const createDictionary = (data = [], init = {}) => {
 const assembleNormalized = (data) => {
 		return {
 				data,
-				ids: Object.keys(data),
+				ids: Object.keys(data).map(id => parseInt(id)),
 		}
 }
 
@@ -43,13 +43,13 @@ export function sagaGenerator (service, action, callback) {
 }
 
 export const assignId = (data) => {
-		return Object.assign({}, data, {id: uuid()})
+		return Object.assign({}, data, {id: parseInt(uuid())})
 }
 
 export const removeManager = ({data, ids}, id) => {
 		return ids
 		.filter(userId => {
-				return String(userId) !== String(id) /* avoid BE ids vs object keys dict */
+				return userId !== id /* avoid BE ids vs object keys dict */
 		})
 		.reduce((all, i) => {
 				all[i] = data[i]
@@ -61,12 +61,9 @@ export function uuid () {
 		let i
 		let random
 		let uuid = ''
-		for (i = 0; i < 32; i++) {
+		for (i = 0; i < 8; i++) {
 				random = Math.random() * 16 | 0
-				if (i === 8 || i === 12 || i === 16 || i === 20) {
-						uuid += '-'
-				}
-				uuid += (i === 12 ? 4 : (i === 16 ? (random & 3 | 8) : random)).toString(16)
+				uuid += (i === 12 ? 4 : (i === 16 ? (random & 3 | 8) : random))
 		}
 		return uuid
 }

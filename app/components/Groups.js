@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {equals} from 'ramda'
+import {equals, isNil} from 'ramda'
 import { Droppable } from 'react-drag-and-drop'
 
 class Groups extends React.PureComponent {
@@ -65,11 +65,15 @@ function showUsers (data, names, group, removeGroupFromUser) {
 		return (<div>
 				<p>{`Users: `}</p>
 				<ul>
-				{names.users.map((u, i) =>
-						<li key={i}>
-							{`${data[u].name}`}
-							<span className='user__delete' onClick={(e) => { removeGroupFromUser(data[u], group) }}>{`delete`}</span>
-					</li>)}
+				{names.users.map((u, i) => {
+						if (isNil(data[u])) {
+								return null
+						}
+						return <li key={i}>
+								{`${data[u].name}`}
+						<span className='user__delete' onClick={(e) => { removeGroupFromUser(data[u], group) }}>{`delete`}</span>
+						</li>
+				})}
 				</ul>
 		</div>)
 }

@@ -69,9 +69,9 @@ const userValidator = (state) => {
 				/* validate rules (attributes) */
 				validateAttributes,
 				/* validate groups */
+				ensureGroupsIdsAreIntegers, /* sometime due to UI management they can be strings (coming from object keys) */
 				checkIfItBringsAGroup,
 				checkIfGroupIsValid(state),
-				ensureGroupsIdsAreIntegers, /* sometime due to UI management they can be strings (coming from object keys) */
 				/* all went good, assign an id */
 				assignId,
 		)

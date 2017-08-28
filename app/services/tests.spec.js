@@ -61,7 +61,7 @@ describe('Service Generics Helpers', () => {
 						const output = helpers.normalize(users.slice(0, 3))
 						const expected = Object.assign({}, {
 								data: first,
-								ids: Object.keys(first),
+								ids: Object.keys(first).map(id => parseInt(id)),
 						})
 						expect(output).toEqual(expected)
 				})
