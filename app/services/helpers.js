@@ -67,3 +67,18 @@ export function uuid () {
 		}
 		return uuid
 }
+
+/* used for groups which requires extra validation */
+const curriedRemovedManager = curry(removeManager)
+
+const checkIsUsers = (group) => {
+		if (group.users && group.users.length > 0) {
+				throw new Error('You cannot delete a group that still has user assigned')
+		}
+		return group.id
+}
+
+export const removeManagerExtended = (state) => pipe(
+		checkIsUsers,
+		curriedRemovedManager(state)
+)

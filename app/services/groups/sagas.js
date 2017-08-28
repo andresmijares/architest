@@ -1,5 +1,5 @@
 import {getGroups} from 'data'
-import {sagaGenerator, normalize, removeManager} from '../helpers'
+import {sagaGenerator, normalize, removeManagerExtended} from '../helpers'
 import {put, select} from 'redux-saga/effects'
 import {validateGroup, assingUsersToGroup, matchWithGroupsHelper} from './helpers'
 
@@ -22,9 +22,9 @@ export function* create ({group}) {
 export function* remove ({group}) {
 		try {
 				yield put({type: 'remove_groups_start'})
-				const {id} = group
 				const state = yield select(({groups}) => groups)
-				const listUpdated = removeManager(state, id)
+				const listUpdated = removeManagerExtended(state)(group)
+
 				yield put({
 						type: 'remove_groups_success',
 						payload: normalize(Object.values(listUpdated)),

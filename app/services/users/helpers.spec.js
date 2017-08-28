@@ -47,7 +47,7 @@ describe('User Service', () => {
 				const removedUser = removeUser([output])(id)
 				expect(removedUser).toEqual({})
 		})
-		it('Should add a group to a user', () => {
+		it('Should assign a group to a user', () => {
 				const state = []
 				const groupId = '3'
 				const output = createUser(state)(user)

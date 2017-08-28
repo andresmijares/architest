@@ -94,6 +94,29 @@ the code is very descriptive. `Listin` -> `Operation` -> `Store Updated`.
 
 Since the structure is the same, I only tests for `users`, the same pattern can be used to tests the `groups` as well.
 
+Another very interesting to see here is how we can extend functionality that match certain patterns, for sample, to `remove` users and groups,
+we rely on the same operation `removeManager` which can be found on `services/helpers`, but groups, has an extra validation,
+we require to check if **there is not user associated with the group** in order to delete, we can extend the `removeManager` functionality to support this
+extra feature very easily.
+
+```javascript
+/* we just curried our current implementation */
+const curriedRemovedManager = curry(removeManager)
+/* create the custom validation */
+const checkIsUsers = (group) => {
+	if (group.users && group.users.length > 0) {
+		throw new Error('You cannot delete a group that still has user assigned')
+	}
+	return group.id
+}
+/* export the extended version of removeManager that now supports an extra feature, without affecting others implementation */
+export const removeManagerExtended = (state) => pipe(
+	checkIsUsers,
+	curriedRemovedManager(state)
+)
+/* Best part... we don't fuck up our test cases */
+```
+
 In terms of UI, I agree I was really lazy, I needed to keep it at 5 hours time, therefore, I went with something really simple.
 
 There is nothing fancy to see in the UI layer, only React component that listen for changes in the state.
