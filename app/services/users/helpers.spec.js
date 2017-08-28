@@ -56,7 +56,7 @@ describe('User Service', () => {
 		})
 		it('Should remove a group from a user', () => {
 				const state = []
-				const groupId = '1'
+				const groupId = 1
 				const output = createUser(state)(user)
 				output.groups = helpers.removeGroupFromUser(output['groups'], groupId)
 				expect(output.groups).toHaveLength(1)

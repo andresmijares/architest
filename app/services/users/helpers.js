@@ -48,7 +48,7 @@ export const addGroupToUser = (arr, id) =>
 		mergeAndUniq(arr, [parseInt(id)]).sort()
 
 export const removeGroupFromUser = (arr, id) =>
-		arr.filter(groupId => groupId !== parseInt(id)).sort()
+		arr.filter(groupId => groupId !== id).sort()
 
 /*
 	groupsList: Array of the groups that user had

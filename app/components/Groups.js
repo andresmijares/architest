@@ -61,14 +61,12 @@ function showDeleteGroup (deleteGroup, group) {
 		return <button onClick={(e) => { deleteGroup(e, group) }}>{`Delete Group`}</button>
 }
 
-function showUsers (data, names, group, removeGroupFromUser) {
+function showUsers (data, group, names, removeGroupFromUser) {
 		return (<div>
 				<p>{`Users: `}</p>
 				<ul>
-				{names.users.map((u, i) => {
-						if (isNil(data[u])) {
-								return null
-						}
+				{names.map((u, i) => {
+						if (isNil(data[u]))	return null
 						return <li key={i}>
 								{`${data[u].name}`}
 						<span className='user__delete' onClick={(e) => { removeGroupFromUser(data[u], group) }}>{`delete`}</span>
