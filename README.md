@@ -1,5 +1,5 @@
 # Architest [![Build Status](https://travis-ci.org/andresmijares/architest.svg?branch=master)](https://travis-ci.org/andresmijares/architest)
-A trivial sample to display architectural practices. The production version can be found [here](http://sleepy-tiger.surge.sh/)
+A trivial sample to display architectural practices. The production version can be found [here](http://laughable-feet.surge.sh/)
 
 The scenario is as mentioned intentionally vague to follow any kind of directions, one of the most important thing to 
 consider is the fact that we can only take **5 hours** at most to do this, this means, we need to define very explicit what 

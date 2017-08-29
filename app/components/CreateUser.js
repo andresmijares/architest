@@ -11,7 +11,7 @@ const validate = (form) => {
 		})
 }
 
-const CreateUser = ({handleForm, handleCheckbox, form, groups, submit}) => {
+const CreateUser = ({handleForm, handleCheckbox, form, groups, submit, reset}) => {
 		// console.log(form)
 		return (<div className='app__detail'>
 				<form>
@@ -38,6 +38,8 @@ const CreateUser = ({handleForm, handleCheckbox, form, groups, submit}) => {
 						<div className='form-group'>
 								<button type='submit' className='btn btn-default' disabled={!validate(form)}
 									onClick={submit}>{`Submit`}</button>
+								<button type='submit' className='btn btn-default'
+								onClick={reset}>{`Reset`}</button>
 						</div>
 				</form>
 		</div>)
@@ -48,6 +50,7 @@ CreateUser.propTypes = {
 		handleCheckbox: PropTypes.func.isRequired,
 		form: PropTypes.object.isRequired,
 		submit: PropTypes.func.isRequired,
+		reset: PropTypes.func.isRequired,
 		groups: PropTypes.object.isRequired,
 }
 

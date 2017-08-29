@@ -64,6 +64,7 @@ class App extends React.PureComponent {
 						type: 'create_users',
 						user,
 				})
+				this.resetForm(e)
 		}
 		handleForm (e) {
 				let form = Object.assign({}, this.state.form)
@@ -72,6 +73,11 @@ class App extends React.PureComponent {
 				return this.setState({
 						form: form,
 				})
+		}
+		resetForm (e) {
+				e.preventDefault()
+				let form = {groups: {}}
+				this.setState({form})
 		}
 		handleCheckbox (fieldName) {
 				return (e) => {
@@ -117,6 +123,7 @@ class App extends React.PureComponent {
 												handleCheckbox={this.handleCheckbox.bind(this)}
 												groups={this.props.groups}
 												form={this.state.form}
+												reset={this.resetForm.bind(this)}
 												submit={this.createUser.bind(this)} />}
 												<List change={this.change.bind(this)}
 												toggle={this.toggle.bind(this)}
