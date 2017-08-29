@@ -6,7 +6,7 @@
 	"scripts": {
 		"start": "npm-run-all --parallel serve:dev lint:watch",
 		"serve:dev": "webpack-dev-server --host 0.0.0.0 --config ./webpack.config.babel.js",
-		"build": "yarn run babel-node server/build && exit 0;",
+		"build": "yarn run lint && yarn run babel-node server/build && exit 0;",
 		"lint": "esw webpack.config.babel.js app --color",
 		"lint:watch": "yarn run lint -- --watch",
 		"test:dev": "jest --watchAll",
