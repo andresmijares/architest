@@ -5,6 +5,8 @@ The scenario is as mentioned intentionally vague to follow any kind of direction
 consider is the fact that we can only take **5 hours** at most to do this, this means, we need to define very explicit what 
 we want to show and what we don't.
 
+It took me an extended night, I know you can see on the logs multiple days, if you notice better, the vast majority after 27th are just details fixed, the whole features were introduced in the first 5 commits.
+
 ## Stories and Features.
 * See a list of existing users.
 * See a list of existing groups.
