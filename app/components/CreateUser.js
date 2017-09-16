@@ -12,7 +12,6 @@ const validate = (form) => {
 }
 
 const CreateUser = ({handleForm, handleCheckbox, form, groups, submit, reset}) => {
-		// console.log(form)
 		return (<div className='app__detail'>
 				<form>
 						<h1 className='app__title'>{`Create User`}</h1>

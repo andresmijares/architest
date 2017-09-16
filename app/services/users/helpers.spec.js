@@ -31,6 +31,14 @@ describe('User Service', () => {
 				const output = createUser(state)(user)
 				expect(output).toMatchObject({'name': user.name, 'groups': user.groups})
 		})
+		it('Should Throw if not valid or missing name', () => {
+				const unvalidUser = Object.assign({}, {groups: [1]})
+				const state = []
+				const output = createUser(state)
+				expect(function () {
+						output(unvalidUser)
+				}).toThrowError('Some validation missing.')
+		})
 		it('Should Throw if not valid', () => {
 				const unvalidUser = Object.assign({}, user, {groups: []})
 				const state = []

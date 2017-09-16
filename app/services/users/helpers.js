@@ -1,11 +1,22 @@
-import {pipe, curry, isNil, difference} from 'ramda'
+import {pipe, curry, isNil, difference, identity, ifElse, has, unless} from 'ramda'
 import {assignId, mergeAndUniq} from '../helpers'
 
+const throwErrorHere = function ({error}) {
+		throw new Error(error.join(', '))
+}
+
+const throwIfInvalid = (obj) => {
+		return ifElse(({error}) => error, throwErrorHere, identity)(obj)
+}
+
+const setError = curry((e, obj) => {
+		return Object.assign({}, obj, {
+				error: has('error', obj) ? obj.error.concat([e]) : [e],
+		})
+})
+
 const checkIfItBringsAGroup = (user) => {
-		if (user.groups.length > 0) {
-				return user
-		}
-		throw new Error('User needs to be associated at least with one group')
+		return unless(({groups}) => groups.length > 0, setError('User needs to be associated at least with one group'))(user)
 }
 
 const checkIfInState = (a, state) => a.every(i => state.indexOf(i) !== -1)
@@ -33,15 +44,10 @@ const ensureGroupsIdsAreIntegers = (user) => {
 const validateAttributes = (user) => {
 			/* the rules are hardcoded but they should not, a config file would be good... #yolo */
 			const rules = ['name']
-			const check = rules.every(rule => {
+			const check = curry((rules, user) => rules.every(rule => {
       return user[rule]
-			})
-			if (check) {
-				return user
-			} else {
-					/* with more time we can make a different logic to return which prop is missing */
-    throw new Error('Some validation missing.')
-			}
+			}))
+		return unless(check(rules), setError('Some validation missing.'))(user)
 }
 
 export const addGroupToUser = (arr, id) =>
@@ -74,6 +80,7 @@ const userValidator = (state) => {
 				checkIfGroupIsValid(state), /* this check if the group exists on the stage... this could be extended to the BE as well */
 				/* all went good, assign an id */
 				assignId,
+				throwIfInvalid,
 		)
 }
 
@@ -82,3 +89,4 @@ const userValidator = (state) => {
 * this make testing way easier cause we can mock the state in the shape we want to.
 * */
 export const curriedValidator = curry(userValidator)
+

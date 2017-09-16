@@ -125,3 +125,4 @@ function* removeUserFromGroups (groupsList, user) {
 
 		yield put({type: 'removeUserFromGroups_users_success', payload: normalize(Object.values(groupsUpdatedWithoutRemovedUser))})
 }
+

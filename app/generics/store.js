@@ -11,4 +11,5 @@ const store = createStore(combineReducers({...reducers}), compose(
 
 sagaMiddleware.run(rootSagas)
 
+window.store = store
 export default store

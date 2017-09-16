@@ -5,7 +5,7 @@ export const users = [
 				groups: [1, 2],
 		},
 		{
-				name: 'Grace Mijares',
+				name: 'Santiago Vainilla',
 				id: 2,
 				groups: [1],
 		},
@@ -15,12 +15,12 @@ export const users = [
 				groups: [2],
 		},
 		{
-				name: 'Silvina Nerenberg',
+				name: 'Lele',
 				id: 4,
 				groups: [1],
 		},
 		{
-				name: 'Ricky Martin',
+				name: 'Ricky Corey Martin',
 				id: 5,
 				groups: [2],
 		},
