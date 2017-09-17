@@ -5,6 +5,8 @@ The scenario is as mentioned intentionally vague to follow any kind of direction
 consider is the fact that we can only take **5 hours** at most to do this, this means, we need to define very explicit what 
 we want to show and what we don't.
 
+It took me an extended night, I know you can see on the logs multiple days, if you notice better, the vast majority after 27th are just details fixed, the whole features were introduced in the first 5 commits.
+
 ## Stories and Features.
 * See a list of existing users.
 * See a list of existing groups.
@@ -126,7 +128,14 @@ This is obviously and mvp, given more time I would go with:
 * Make UI test (Snapshots).
 * Make a router and have a different page for each.
 * Create more tests cases scenarios.
-* Make something more complex with user validations (not only a name lol). 🤣
+* Make something more complex with user validations (not only a name lol). 🤣 
+
+## Notes:
+I've received comments telling that this a bad approach cause it does not follow the redux standards (if that is something) and mutations need to happen in the reducers all the time (aja...).
+
+Even when I can be agree with this kind of comment, please, remember that there is not 1 architectural pattern in the world, and also, you don't own the voice of the truth; If you can evangelize a technology as it is, good for you, I'm more interested in solving the problems that I have not those that I want to solve or any kind of common fashion in the community. Remember that keeping the same status quo all around just mean you will never innovate your processes.
+
+At end of the day this is just an advice, you can do whatever the fuck you want to do (and think).
 
 ## More
 For more information about the decision and the style made, you can refer to the following posts that I've writen:
