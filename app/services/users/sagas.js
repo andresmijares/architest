@@ -4,26 +4,6 @@ import {put, select, fork} from 'redux-saga/effects'
 import {matchWithGroups} from '../groups/sagas'
 import {curriedValidator as userValidator, addGroupToUser, removeGroupFromUser, updateGroupsWithoutUser} from './helpers'
 
-/*
-* This is not an atomic service,
-* it's meant it does destroy the state but add/update and persist records
-* This come handy when we need to use pagination
-* */
-
-/* params {
-		@ Int => Indicate a sequence to support pagination in case it's available
- */
-// export function* fetch ({sec}) {
-// 		try {
-// 				yield put({type: 'fetch_users_start'})
-// 				const users = yield call(getUsers, sec)
-// 				/* place it on the state */
-// 				yield put({type: 'fetch_users_success', payload: normalize(users)})
-// 		} catch (error) {
-// 				yield put({type: 'fetch_users_error', error})
-// 		}
-// }
-
 export const fetch = sagaGenerator('users', 'fetch', getUsers)
 
 /*
@@ -47,6 +27,12 @@ export function* create ({user}) {
 				* */
 				const groups = yield select(({groups}) => groups.ids)
 				const userValidated = userValidator(groups)(user)
+				// const userValidated = userValidator(groups)
+				// const validateWithError = pipe(
+				// 		userValidated,
+				// 		throwIfInvalid, /* side effect goes here */
+				// )(user)
+
 				/* Ensure we update the groups as well */
 				yield fork(matchWithGroups, user)
 				/* if we get here, all good! */

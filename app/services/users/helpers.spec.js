@@ -27,7 +27,7 @@ function removeUser (state) {
 * */
 describe('User Service', () => {
 		it('Should create a validated user', () => {
-				const state = []
+				const state = [1, 2]
 				const output = createUser(state)(user)
 				expect(output).toMatchObject({'name': user.name, 'groups': user.groups})
 		})
@@ -38,6 +38,22 @@ describe('User Service', () => {
 				expect(function () {
 						output(unvalidUser)
 				}).toThrowError('Some validation missing.')
+		})
+		it('Should Throw if not valid', () => {
+				const unvalidUser = Object.assign({}, user, {groups: []})
+				const state = []
+				const output = createUser(state)
+				expect(function () {
+						output(unvalidUser)
+				}).toThrowError('User needs to be associated at least with one group')
+		})
+		it('Should Throw if one group is not valid', () => {
+				const invalid = Object.assign({}, user)
+				const state = [1]
+				const output = createUser(state)
+				expect(function () {
+						output(invalid)
+				}).toThrowError(`You tried to create an user assigned to following invalid groups ids 2`)
 		})
 		it('Should Throw if not valid', () => {
 				const unvalidUser = Object.assign({}, user, {groups: []})

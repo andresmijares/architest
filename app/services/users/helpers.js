@@ -1,11 +1,11 @@
-import {pipe, curry, isNil, difference, identity, ifElse, has, unless} from 'ramda'
+import {pipe, curry, isNil, difference, identity, ifElse, has, unless, cond, T} from 'ramda'
 import {assignId, mergeAndUniq} from '../helpers'
 
 const throwErrorHere = function ({error}) {
 		throw new Error(error.join(', '))
 }
 
-const throwIfInvalid = (obj) => {
+export const throwIfInvalid = (obj) => {
 		return ifElse(({error}) => error, throwErrorHere, identity)(obj)
 }
 
@@ -19,19 +19,31 @@ const checkIfItBringsAGroup = (user) => {
 		return unless(({groups}) => groups.length > 0, setError('User needs to be associated at least with one group'))(user)
 }
 
-const checkIfInState = (a, state) => a.every(i => state.indexOf(i) !== -1)
+const checkIfInState = curry((state, {groups}) => {
+		return groups.every(i => state.indexOf(i) !== -1)
+})
 
-const checkIfGroupIsValid = curry((state, user) => {
-		if (checkIfInState(user.groups, state)) {
-				return user
-		} else if (state.length < 1) {
-				return user /* for testing only... offline capability maybe ? */
-		}
-		if (difference(user.groups, state).length > 0) {
-				throw new Error(`You tried to create an user assigned to following invalid groups ids ${difference(user.groups, state).join(' ,')}`)
-		} else {
-				throw new Error('One of more groups associated do not exists.')
-		}
+const checkIfGroupIsValid = curry((groups, user) => {
+		const checkDifference = curry((groups, user) => difference(user.groups, groups).length > 0)
+		const checkIfGroupsInState = curry((groups, user) => groups.length < 1)
+		return cond([
+						[checkIfInState(groups), identity],
+						[checkIfGroupsInState(groups), identity],
+						[checkDifference(groups), setError(`You tried to create an user assigned to following invalid groups ids ${difference(user.groups, groups).join(' ,')}`)],
+						[T, identity],
+				]
+			)(user)
+
+		// if (checkIfInState(user.groups, groups)) {
+		// 		return user
+		// } else if (groups.length < 1) {
+		// 		return user /* for testing only... offline capability maybe ? */
+		// }
+		// if (difference(groups, user.groups, ).length > 0) {
+		// 		throw new Error(`You tried to create an user assigned to following invalid groups ids ${difference(user.groups, groups).join(' ,')}`)
+		// } else {
+		// 		throw new Error('One of more groups associated do not exists.')
+		// }
 })
 
 const ensureGroupsIdsAreIntegers = (user) => {
@@ -70,17 +82,17 @@ export const updateGroupsWithoutUser = (userGroups, state, user) =>
 		}, Object.assign({}, state))
 
 /* More validation can be added in the future */
-const userValidator = (state) => {
+const userValidator = (groups) => {
 		return pipe(
 				/* validate rules (attributes) */
 				validateAttributes, /* checks the user has all the required props */
 				/* validate groups */
 				checkIfItBringsAGroup, /* This is sample of a Business rule that tricky users can avoid if we rely on on the UI validation */
 				ensureGroupsIdsAreIntegers, /* sometime due to UI management they can be strings (coming from object keys) */
-				checkIfGroupIsValid(state), /* this check if the group exists on the stage... this could be extended to the BE as well */
+				checkIfGroupIsValid(groups), /* this check if the group exists on the stage... this could be extended to the BE as well */
 				/* all went good, assign an id */
 				assignId,
-				throwIfInvalid,
+				throwIfInvalid, /* side effect goes here */
 		)
 }
 
