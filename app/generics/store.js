@@ -1,11 +1,11 @@
 import { createStore, compose, applyMiddleware, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
-import rootSagas, {reducers} from '../services'
-import {errorMiddleware} from 'services/errors/errorMiddleware'
+import rootSagas from '../services'
+import opsReducers from '../operations/opsReducers'
 const sagaMiddleware = createSagaMiddleware()
 
-const store = createStore(combineReducers({...reducers}), compose(
-		applyMiddleware(sagaMiddleware, errorMiddleware),
+const store = createStore(combineReducers({...opsReducers}), compose(
+		applyMiddleware(sagaMiddleware),
 		window.devToolsExtension ? window.devToolsExtension() : (f) => f
 ))
 

@@ -1,10 +1,7 @@
-import {getUsers} from 'data'
-import {sagaGenerator, normalize, removeManager} from '../helpers'
+import {normalize, removeManager} from '../helpers'
 import {put, select, fork} from 'redux-saga/effects'
 import {matchWithGroups} from '../groups/sagas'
 import {curriedValidator as userValidator, addGroupToUser, removeGroupFromUser, updateGroupsWithoutUser} from './helpers'
-
-export const fetch = sagaGenerator('users', 'fetch', getUsers)
 
 /*
 * The same pattern will apply for all the services (sagas)

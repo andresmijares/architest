@@ -1,28 +1,12 @@
-import {takeLatest} from 'redux-saga/effects'
-import groups from './groups/reducers'
-import users from './users/reducers'
-import error from './errors/reducers'
-
-import * as usersServices from './users/sagas'
-import * as groupsServices from './groups/sagas'
-
-export const reducers = {
-		groups,
-		users,
-		error,
-}
+import {takeEvery, takeLatest} from 'redux-saga/effects'
+import * as opsSaga from '../operations/opsSaga'
+import * as hotelSagas from './hotels/sagas'
 
 function* rootSagas () {
 		yield [
-				takeLatest('fetch_users', usersServices.fetch),
-				takeLatest('create_users', usersServices.create),
-				takeLatest('remove_users', usersServices.remove),
-				takeLatest('assignGroup_users', usersServices.assignGroup),
-				takeLatest('removeGroup_users', usersServices.removeGroup),
-				takeLatest('fetch_groups', groupsServices.fetch),
-				takeLatest('create_groups', groupsServices.create),
-				takeLatest('remove_groups', groupsServices.remove),
-				takeLatest('matchWithUsers_groups', groupsServices.matchWithUsers),
+				takeEvery('start_operation', opsSaga.operationHandler),
+				takeLatest(hotelSagas.OPERATIONS.BOOK_ROOM.name, hotelSagas.bookRoom),
+				takeLatest(hotelSagas.OPERATIONS.BOOK_FLIGHT.name, hotelSagas.cancellableFLowBookFlight),
 		]
 }
 

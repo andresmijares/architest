@@ -1,9 +1,6 @@
-import {getGroups} from 'data'
-import {sagaGenerator, normalize, removeManagerExtended} from '../helpers'
+import {normalize, removeManagerExtended} from '../helpers'
 import {put, select} from 'redux-saga/effects'
 import {validateGroup, assingUsersToGroup, matchWithGroupsHelper} from './helpers'
-
-export const fetch = sagaGenerator('groups', 'fetch', getGroups)
 
 export function* create ({group}) {
 		try {
