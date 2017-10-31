@@ -35,14 +35,12 @@ export function* operationHandler () {
 }
 
 export function* returnAction (action) {
-	console.log(action)
 	return yield action
 }
 
 export function* handleStep (step) {
 	while (true) {
 		const cancel = yield takeEvery('operation_step', returnAction)
-		console.log(cancel)
 		if (cancel.payload !== undefined && cancel.payload.step === step) {
 			return yield cancel
 		}
@@ -67,23 +65,19 @@ function* createShiftHandler () {
 		})
 
 		if (stepResult.type === cancelAction) {
-			console.log('CANCEL 1')
 			return {
 				cancelled: {},
 			}
 		}
-		console.log('SELECT_GROUP')
 		stepResult = yield race({
 			task: yield handleStep(steps.SET_INFO, returnAction),
 			cancel: yield cancelHandler(cancelAction),
 		})
 		if (stepResult.type === cancelAction) {
-			console.log('CANCEL 1')
 			return {
 				cancelled: {},
 			}
 		}
-		console.log('SET_INFO')
 		return {data: 'RESPONSE'}
 	} catch (e) {
 		return {

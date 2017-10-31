@@ -28,7 +28,6 @@ const buildData = (steps, currentStep) => {
 
 export const FlowTreeGraph = (props) => {
 	const {step, steps} = props
-	console.log(buildData(Object.values(steps), step))
 	return (
 	<div className='custom-container'>
 		<Tree

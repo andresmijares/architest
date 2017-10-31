@@ -18,6 +18,7 @@ export const OPERATIONS = {
 const initialState = {
 	inProgress: {},
 	failed: {},
+	succeed: {},
 	unexpectedReducerErrors: [],
 }
 
@@ -91,24 +92,51 @@ function operationsReducers (state = initialState, action) {
 				},
 			}
 
-		case 'failed_operation' :
+		case 'failure_operation' : {
+			const failed = state.inProgress[payload.operation]
 			return {
 				...state,
-				inProgress: omit([payload.type], state.inProgress),
+				inProgress: omit([payload.operation], state.inProgress),
 				failed: {
 					[payload.operation]: {
 						error: payload.error,
+						...failed,
 					},
+					...state.failed,
 				},
 			}
+		}
 
-		case 'cancel_operation':
-		case 'success_operation': {
+		case 'cancel_operation': {
 			return {
 				...state,
 				inProgress: omit([payload.operation], state.inProgress),
 			}
 		}
+
+		case 'success_operation': {
+			const operation = state.inProgress[payload.operation]
+			return {
+				...state,
+				inProgress: omit([payload.operation], state.inProgress),
+				succeed: {
+					...state.succeed,
+					[payload.operation]: operation,
+				},
+			}
+		}
+
+		case 'clean_failure_operation' :
+			return {
+				...state,
+				failed: omit([payload.operation], state.failed),
+			}
+
+		case 'clean_success_operation' :
+			return {
+				...state,
+				succeed: omit([payload.operation], state.failed),
+			}
 
 		default:
 			return state
