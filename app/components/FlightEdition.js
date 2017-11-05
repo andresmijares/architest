@@ -1,0 +1,80 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import { equals, isEmpty } from 'ramda'
+import './style.css'
+import {EditFlight} from './EditFlight'
+import {SelectMeal} from './SelectMeal'
+
+export const FlightEdition = props => {
+	const {step, steps, triggerAction, operation, FLIGHT_EDITION} = props
+	const {SELECT_FLIGHT, SELECT_OPERATION, EDIT_FLIGHT_DATE_OPERATION, SELECT_FLIGHT_MEAL_OPERATION} = steps
+	const inProgress = !isEmpty(operation)
+	return (
+		<div>
+			<div className='commands'>
+				{ !inProgress &&
+				<div>
+					{`Start ${FLIGHT_EDITION.name}`}
+					<button onClick={() => triggerAction(FLIGHT_EDITION.name, {})}>{FLIGHT_EDITION.name}</button>
+				</div>
+				}
+				{
+					equals(step, SELECT_FLIGHT) &&
+					<div>
+						<div>
+							{`Step ${SELECT_FLIGHT}`}
+							<button onClick={() => triggerAction(SELECT_FLIGHT, {})}>{SELECT_FLIGHT}</button>
+						</div>
+					</div>
+				}
+				{
+					equals(step, SELECT_OPERATION) &&
+					<div>
+						<div>
+							{`Step ${SELECT_OPERATION}`}
+						</div>
+						<div>
+							<button onClick={() => triggerAction(EDIT_FLIGHT_DATE_OPERATION, {})}>{EDIT_FLIGHT_DATE_OPERATION}</button>
+							<button onClick={() => triggerAction(SELECT_FLIGHT_MEAL_OPERATION, {})}>{SELECT_FLIGHT_MEAL_OPERATION}</button>
+						</div>
+					</div>
+				}
+
+				{
+					equals(step, EDIT_FLIGHT_DATE_OPERATION) &&
+						<div>
+							<EditFlight/>
+						</div>
+				}
+				{
+					equals(step, SELECT_FLIGHT_MEAL_OPERATION) &&
+					<div>
+						<SelectMeal/>
+					</div>
+				}
+				{ inProgress &&
+				<div className='cancel'>
+					{`${FLIGHT_EDITION.actions.cancel}`}
+					<button onClick={() => triggerAction(FLIGHT_EDITION.actions.cancel, {})}>{FLIGHT_EDITION.actions.cancel}</button>
+				</div>
+				}
+			</div>
+			<div className='operation'>
+				{ operation && inProgress &&
+				<div>
+					<div>{`Step: ${operation.step}`}</div>
+					<div>{`State: ${JSON.stringify(operation.state)}`}</div>
+				</div>
+				}
+			</div>
+		</div>
+	)
+}
+
+FlightEdition.propTypes = {
+	FLIGHT_EDITION: PropTypes.object,
+	step: PropTypes.string,
+	steps: PropTypes.object,
+	triggerAction: PropTypes.func,
+	operation: PropTypes.object,
+}

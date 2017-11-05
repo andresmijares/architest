@@ -1,4 +1,4 @@
-import { omit, filter, equals } from 'ramda'
+import { filter, equals, assocPath, dissocPath } from 'ramda'
 import { uuid } from './helpers'
 
 export const OPERATIONS = {
@@ -68,74 +68,64 @@ function stackReducers (state = stackState, action) {
 function operationsReducers (state = initialState, action) {
 	const {type, payload} = action
 	switch (type) {
-		case 'start_operation' :
+		case 'start_operation' : {
 			return {
 				...state,
-				inProgress: {
-					...state.inProgress,
-					[payload.operation]: {
-						state: payload.state,
-						step: payload.step,
-					},
-				},
+				inProgress: assocPath(
+					[...payload.context, payload.operation],
+					{state: payload.state, step: payload.step},
+					state.inProgress),
 			}
+		}
 
 		case 'update_operation_state' :
 			return {
 				...state,
-				inProgress: {
-					...state.inProgress,
-					[payload.operation]: {
-						state: payload.state,
-						step: payload.step,
-					},
-				},
+				inProgress: assocPath(
+					[...payload.context, payload.operation],
+					{state: payload.state, step: payload.step},
+					state.inProgress),
 			}
 
 		case 'failure_operation' : {
-			const failed = state.inProgress[payload.operation]
 			return {
 				...state,
-				inProgress: omit([payload.operation], state.inProgress),
-				failed: {
-					[payload.operation]: {
-						error: payload.error,
-						...failed,
-					},
-					...state.failed,
-				},
+				inProgress: dissocPath([...payload.context, payload.operation], state.inProgress),
+				failed: assocPath(
+						[...payload.context, payload.operation],
+						{error: payload.error},
+						state.failed),
 			}
 		}
 
 		case 'cancel_operation': {
 			return {
 				...state,
-				inProgress: omit([payload.operation], state.inProgress),
+				inProgress: dissocPath([...payload.context, payload.operation], state.inProgress),
 			}
 		}
 
 		case 'success_operation': {
-			const operation = state.inProgress[payload.operation]
 			return {
 				...state,
-				inProgress: omit([payload.operation], state.inProgress),
-				succeed: {
-					...state.succeed,
-					[payload.operation]: operation,
-				},
+				inProgress: dissocPath([...payload.context, payload.operation], state.inProgress),
+				succeed: assocPath(
+					[...payload.context, payload.operation],
+					{state: payload.state},
+					state.succeed),
 			}
 		}
 
 		case 'clean_failure_operation' :
 			return {
 				...state,
-				failed: omit([payload.operation], state.failed),
+				failed: dissocPath([...payload.context, payload.operation], state.failed),
 			}
 
 		case 'clean_success_operation' :
 			return {
 				...state,
-				succeed: omit([payload.operation], state.failed),
+				succeed: dissocPath([...payload.context, payload.operation], state.inProgress),
 			}
 
 		default:
