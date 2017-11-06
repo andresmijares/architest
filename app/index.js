@@ -9,6 +9,7 @@ import { OPERATIONS } from './services/flights/sagas'
 import { or, equals, isEmpty } from 'ramda'
 import { Flights } from './components/Flights'
 import { FlightEdition } from './components/FlightEdition'
+import {getOperationInfo, triggerAction} from './containers/helpers'
 import { FlowTreeGraph } from './graph/tree'
 
 /*
@@ -19,25 +20,15 @@ class App extends React.PureComponent {
 	render () {
 		const {dispatch} = this.props
 		const {BOOK_FLIGHT, FLIGHT_EDITION} = OPERATIONS
-		const triggerAction = (type, payload) => {
-			dispatch({type, payload})
-		}
 		const flightComponent = <Flights
 			BOOK_FLIGHT={BOOK_FLIGHT}
-			steps={BOOK_FLIGHT.steps}
-			locations={this.props.bookFlight.locations}
-			succeed={!isEmpty(this.props.bookFlight.succeed)}
-			failed={!isEmpty(this.props.bookFlight.failed)}
-			step={or(this.props.bookFlight.bookFlightOperation.step, '')}
-			operation={this.props.bookFlight.bookFlightOperation}
-			triggerAction={triggerAction}/>
+			{...this.props.bookFlight}
+			triggerAction={triggerAction(dispatch)}/>
 
 		const flightEdition = <FlightEdition
 			FLIGHT_EDITION={FLIGHT_EDITION}
-			step={or(this.props.flightEdition.flightEditionOperation.step, '')}
-			operation={this.props.flightEdition.flightEditionOperation}
-			steps={FLIGHT_EDITION.steps}
-			triggerAction={triggerAction}/>
+			{...this.props.flightEdition}
+			triggerAction={triggerAction(dispatch)}/>
 
 		// <FlowTreeGraph step={or(this.props.bookFlight.bookFlightOperation.step, '')} steps={BOOK_FLIGHT.steps}/>
 		return (
@@ -50,18 +41,13 @@ class App extends React.PureComponent {
 
 const mapStateToProps = ({operations}) => {
 	const bookFlightOperation = or(operations.inProgress[OPERATIONS.BOOK_FLIGHT.name], {})
-	const succeed = or(operations.succeed[OPERATIONS.BOOK_FLIGHT.name], {})
-	const failed = or(operations.failed[OPERATIONS.BOOK_FLIGHT.name], {})
-	const locations = equals(bookFlightOperation.step, OPERATIONS.BOOK_FLIGHT.steps.SELECT_ORIGIN) ? bookFlightOperation.state.locations : []
 	return {
 		bookFlight: {
-			locations,
-			bookFlightOperation,
-			succeed,
-			failed,
+			...getOperationInfo(OPERATIONS.BOOK_FLIGHT.name, operations),
+			locations: equals(bookFlightOperation.step, OPERATIONS.BOOK_FLIGHT.steps.SELECT_ORIGIN) ? bookFlightOperation.state.locations : [],
 		},
 		flightEdition: {
-			flightEditionOperation: or(operations.inProgress[OPERATIONS.FLIGHT_EDITION.name], {}),
+			...getOperationInfo(OPERATIONS.FLIGHT_EDITION.name, operations),
 		},
 	}
 }
@@ -80,13 +66,19 @@ const render = () => {
 App.propTypes = {
 	dispatch: PropTypes.func.isRequired,
 	bookFlight: PropTypes.shape({
-		bookFlightOperation: PropTypes.object,
+		operation: PropTypes.object,
 		locations: PropTypes.any,
 		succeed: PropTypes.object,
 		failed: PropTypes.object,
+		step: PropTypes.string,
+		steps: PropTypes.string,
 	}),
 	flightEdition: PropTypes.shape({
-		flightEditionOperation: PropTypes.object,
+		operation: PropTypes.object,
+		succeed: PropTypes.object,
+		failed: PropTypes.object,
+		step: PropTypes.string,
+		steps: PropTypes.string,
 	}),
 
 }

@@ -129,6 +129,7 @@ function* editFlight () {
 			if (step.type === steps.SELECT_FLIGHT_MEAL_OPERATION) {
 				yield mealSelectionOperation(context)
 			}
+			yield put(updateState(steps.SELECT_OPERATION, {}))
 		}
 
 		// yield put({type: actions.success, payload: {}})
@@ -207,7 +208,6 @@ export function* operationFLow (flow, operationName, actions, steps, context = [
 }
 
 const builder = (operation, context = []) => (step, state) => {
-	console.log(context)
 	return {
 		type: 'update_operation_state',
 		payload: {

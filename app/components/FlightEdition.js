@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { equals, isEmpty } from 'ramda'
 import './style.css'
 import {EditFlight} from './EditFlight'
-import {SelectMeal} from './SelectMeal'
+import SelectMealContainer from '../containers/SelectMealContainer'
 
 export const FlightEdition = props => {
 	const {step, steps, triggerAction, operation, FLIGHT_EDITION} = props
@@ -39,7 +39,6 @@ export const FlightEdition = props => {
 						</div>
 					</div>
 				}
-
 				{
 					equals(step, EDIT_FLIGHT_DATE_OPERATION) &&
 						<div>
@@ -49,7 +48,7 @@ export const FlightEdition = props => {
 				{
 					equals(step, SELECT_FLIGHT_MEAL_OPERATION) &&
 					<div>
-						<SelectMeal/>
+						<SelectMealContainer context={[FLIGHT_EDITION.name]}/>
 					</div>
 				}
 				{ inProgress &&
