@@ -1,4 +1,4 @@
-import { filter, equals, assocPath, dissocPath } from 'ramda'
+import { filter, equals, assocPath, dissocPath, isEmpty, path, or } from 'ramda'
 import { uuid } from './helpers'
 
 export const OPERATIONS = {
@@ -15,10 +15,13 @@ export const OPERATIONS = {
 	REMOVE_SPECIALIST: 'REMOVE_SPECIALISTS',
 }
 
-const initialState = {
+const stateObject = {
 	inProgress: {},
 	failed: {},
 	succeed: {},
+}
+const initialState = {
+	...stateObject,
 	unexpectedReducerErrors: [],
 }
 
@@ -59,6 +62,8 @@ function stackReducers (state = stackState, action) {
 	}
 }
 
+const pathOrObject = (route, state) => or(path(route, state), {})
+
 /**
  * UPDATE STEP?!
  * @param state
@@ -69,32 +74,94 @@ function operationsReducers (state = initialState, action) {
 	const {type, payload} = action
 	switch (type) {
 		case 'start_operation' : {
-			return {
-				...state,
-				inProgress: assocPath(
-					[...payload.context, payload.operation],
-					{state: payload.state, step: payload.step},
-					state.inProgress),
+			const baseOperation = isEmpty(payload.context)
+			if (!baseOperation) {
+				return {
+					...state,
+					inProgress: assocPath(
+						[...payload.context],
+						{
+							...pathOrObject(['inProgress', ...payload.context], state),
+							children: {
+								...pathOrObject(['inProgress', ...payload.context, 'children'], state),
+								...stateObject,
+								inProgress: {
+									...pathOrObject([...payload.context, 'children', 'inProgress'], state),
+									[payload.operation]: {state: payload.state, step: payload.step},
+								},
+							},
+						}, state.inProgress),
+				}
+			} else {
+				return {
+					...state,
+					inProgress: assocPath(
+						[payload.operation],
+						{state: payload.state, step: payload.step},
+						state.inProgress),
+				}
 			}
 		}
 
-		case 'update_operation_state' :
-			return {
-				...state,
-				inProgress: assocPath(
-					[...payload.context, payload.operation],
-					{state: payload.state, step: payload.step},
-					state.inProgress),
+		case 'update_operation_state' : {
+			const baseOperation = isEmpty(payload.context)
+			if (!baseOperation) {
+				return {
+					...state,
+					inProgress: assocPath(
+						[...payload.context],
+						{
+							...pathOrObject(['inProgress', ...payload.context], state),
+							children: {
+								...pathOrObject(['inProgress', ...payload.context, 'children'], state),
+								inProgress: {
+									...pathOrObject([...payload.context, 'children', 'inProgress'], state),
+									[payload.operation]: {state: payload.state, step: payload.step},
+								},
+							},
+						},
+						state.inProgress),
+				}
+			} else {
+				return {
+					...state,
+					inProgress: assocPath(
+						[payload.operation],
+						{state: payload.state, step: payload.step},
+						state.inProgress),
+				}
 			}
+		}
 
-		case 'failure_operation' : {
-			return {
-				...state,
-				inProgress: dissocPath([...payload.context, payload.operation], state.inProgress),
-				failed: assocPath(
-						[...payload.context, payload.operation],
-						{error: payload.error},
-						state.failed),
+		case 'failure_operation': {
+			const baseOperation = isEmpty(payload.context)
+			if (!isEmpty(baseOperation)) {
+				return {
+					...state,
+					inProgress: assocPath(
+						[...payload.context],
+						{
+							...pathOrObject(['inProgress', ...payload.context], state),
+							children: {
+								...pathOrObject(['inProgress', ...payload.context, 'children'], state),
+								inProgress: dissocPath(['inProgress', ...payload.context, 'children', payload.operation], state),
+								failed: {
+									...pathOrObject(['inProgress', ...payload.context, 'children', 'failed'], state),
+									[payload.operation]: path(['inProgress', ...payload.context, 'children', payload.operation], state),
+								},
+							},
+						},
+						state.inProgress),
+				}
+			} else {
+				return {
+					...state,
+					inProgress: dissocPath([payload.operation], state.inProgress),
+					succeed: assocPath(
+						[payload.operation],
+						{state: payload.state},
+						state.succeed),
+				}
 			}
 		}
 
@@ -106,13 +173,34 @@ function operationsReducers (state = initialState, action) {
 		}
 
 		case 'success_operation': {
-			return {
-				...state,
-				inProgress: dissocPath([...payload.context, payload.operation], state.inProgress),
-				succeed: assocPath(
-					[...payload.context, payload.operation],
-					{state: payload.state},
-					state.succeed),
+			const baseOperation = isEmpty(payload.context)
+			if (!isEmpty(baseOperation)) {
+				return {
+					...state,
+					inProgress: assocPath(
+						[...payload.context],
+						{
+							...pathOrObject(['inProgress', ...payload.context], state),
+							children: {
+								...pathOrObject(['inProgress', ...payload.context, 'children'], state),
+								inProgress: dissocPath(['inProgress', ...payload.context, 'children', payload.operation], state),
+								succeed: {
+									...pathOrObject(['inProgress', ...payload.context, 'children', 'succeed'], state),
+									[payload.operation]: path(['inProgress', ...payload.context, 'children', payload.operation], state),
+								},
+							},
+						},
+						state.inProgress),
+				}
+			} else {
+				return {
+					...state,
+					inProgress: dissocPath([payload.operation], state.inProgress),
+					succeed: assocPath(
+						[payload.operation],
+						{state: payload.state},
+						state.succeed),
+				}
 			}
 		}
 
@@ -134,6 +222,6 @@ function operationsReducers (state = initialState, action) {
 }
 
 export default {
-	stack: stackReducers,
+	// stack: stackReducers,
 	operations: operationsReducers,
 }

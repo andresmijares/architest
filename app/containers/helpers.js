@@ -1,8 +1,8 @@
-import {or, path} from 'ramda'
+import {or, path, isEmpty} from 'ramda'
 import { OPERATIONS } from '../services/flights/sagas'
 
 export const getOperationInfo = (operationName, state, context = []) => {
-	const opPath = [...context, operationName]
+	const opPath = isEmpty(context) ? [operationName] : [...context, 'children', 'inProgress', operationName]
 	const operation = or(path(opPath, state.inProgress), {})
 	return {
 		operation,
