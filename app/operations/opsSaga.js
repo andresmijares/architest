@@ -1,90 +1,37 @@
-import {OPERATIONS} from './opsReducers'
-import { put, select, race, takeEvery } from 'redux-saga/effects'
-import { isNil } from 'ramda'
+import { call, cancel, put, take, fork } from 'redux-saga/effects'
 
-export function* operationHandler () {
-	yield takeEvery('start_operation', function* handler (action) {
-		if (action.payload.operation === OPERATIONS.CREATE_SHIFT.name) {
-			const {error, data, cancelled} = yield createShiftHandler(action)
-			if (!isNil(cancelled)) {
-				yield put({
-					type: 'cancel_operation',
-					payload: action.payload,
-				})
-			}
-			if (!isNil(error)) {
-				yield put({
-					type: 'failed_operation',
-					payload: {
-						...action.payload,
-						error,
-					},
-				})
-			} else {
-				yield put({
-					type: 'UPDATE_APP_STORE_OR_DO_THINGS',
-					payload: data,
-				})
-				yield put({
-					type: 'success_operation',
-					payload: action.payload,
-				})
-			}
-		}
-	})
-}
+export function* operationFLow (flow, operationName, actions, steps, context = []) {
+	yield put({type: 'start_operation', payload: {operation: operationName, step: steps.INITIAL, state: {}, context}})
+	const task = yield fork(flow, context)
+	const action = yield take([actions.success, actions.cancel, actions.failure])
+	if (action.type === actions.success) {
+		yield put({type: 'success_operation', payload: {context, operation: operationName}})
+		if (actions.successHandled) {
+			yield take(actions.successHandled)
+			return yield put({type: 'clean_success_operation', payload: {context, operation: operationName}})
+		} else return
+	}
 
-export function* returnAction (action) {
-	return yield action
-}
+	if (action.type === actions.failure) {
+		yield put({type: 'failure_operation', payload: {context, operation: operationName, error: action.payload.error}})
+		yield take(actions.failureHandled)
+		return yield put({type: 'clean_failure_operation', payload: {context, operation: operationName}})
+	}
 
-export function* handleStep (step) {
-	while (true) {
-		const cancel = yield takeEvery('operation_step', returnAction)
-		if (cancel.payload !== undefined && cancel.payload.step === step) {
-			return yield cancel
-		}
+	if (action.type === actions.cancel) {
+		yield cancel(task)
+		return yield put({type: 'cancel_operation', payload: {context, operation: operationName}})
 	}
 }
 
-export function* cancelHandler (type) {
-	while (true) {
-		const cancel = yield takeEvery('cancel_operation', returnAction)
-		if (cancel.payload.operation === type) {
-			return yield cancel
-		}
-	}
-}
-
-function* createShiftHandler () {
-	try {
-		const {steps, cancelAction} = OPERATIONS.CREATE_SHIFT
-		let stepResult = yield race({
-			task: yield handleStep(steps.SELECT_GROUP, returnAction),
-			cancel: yield cancelHandler(cancelAction),
-		})
-
-		if (stepResult.type === cancelAction) {
-			return {
-				cancelled: {},
-			}
-		}
-		stepResult = yield race({
-			task: yield handleStep(steps.SET_INFO, returnAction),
-			cancel: yield cancelHandler(cancelAction),
-		})
-		if (stepResult.type === cancelAction) {
-			return {
-				cancelled: {},
-			}
-		}
-		return {data: 'RESPONSE'}
-	} catch (e) {
-		return {
-			error: {
-				type: 'UNHANDLED HANDLER ERROR',
-				info: e,
-			},
-		}
+export const builder = (operation, context = []) => (step, state) => {
+	return {
+		type: 'update_operation_state',
+		payload: {
+			context,
+			operation,
+			state,
+			step,
+		},
 	}
 }

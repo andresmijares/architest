@@ -1,4 +1,6 @@
 import { call, cancel, put, take, fork } from 'redux-saga/effects'
+import {builder} from '../../operations/opsSaga'
+import {dateEditionOperation, mealSelectionOperation} from './privateOperations'
 
 export const OPERATIONS = {
 	BOOK_FLIGHT: {
@@ -68,16 +70,7 @@ export const OPERATIONS = {
 	},
 }
 
-export function * bookFlightOperation () {
-	const {BOOK_FLIGHT} = OPERATIONS
-	yield operationFLow(bookFlight, BOOK_FLIGHT.name, BOOK_FLIGHT.actions, BOOK_FLIGHT.steps)
-}
-export function * flightEditionOperation () {
-	const {FLIGHT_EDITION} = OPERATIONS
-	yield operationFLow(editFlight, FLIGHT_EDITION.name, FLIGHT_EDITION.actions, FLIGHT_EDITION.steps)
-}
-
-function* bookFlight () {
+export function* bookFlight () {
 	try {
 		const {BOOK_FLIGHT} = OPERATIONS
 		const {steps} = BOOK_FLIGHT
@@ -106,7 +99,7 @@ function* bookFlight () {
 	}
 }
 
-function* editFlight () {
+export function* editFlight () {
 	try {
 		const {FLIGHT_EDITION} = OPERATIONS
 		const {steps} = FLIGHT_EDITION
@@ -138,7 +131,7 @@ function* editFlight () {
 	}
 }
 
-function * dateEdition (context) {
+export function * dateEdition (context) {
 	try {
 		const {EDIT_FLIGHT_DATE} = OPERATIONS
 		const updateState = builder(EDIT_FLIGHT_DATE.name, context)
@@ -155,7 +148,7 @@ function * dateEdition (context) {
 	}
 }
 
-function * mealSelection (context) {
+export function * mealSelection (context) {
 	try {
 		const {SELECT_FLIGHT_MEAL} = OPERATIONS
 		const updateState = builder(SELECT_FLIGHT_MEAL.name, context)
@@ -169,53 +162,6 @@ function * mealSelection (context) {
 		yield put({type: SELECT_FLIGHT_MEAL.actions.success, payload: {}})
 	} catch (error) {
 		yield put({type: OPERATIONS.SELECT_FLIGHT_MEAL.actions.failure, payload: {error: 'UNHANDLED ERROR !!!!'}})
-	}
-
-}
-
-function * dateEditionOperation (context) {
-	const {EDIT_FLIGHT_DATE} = OPERATIONS
-	yield operationFLow(dateEdition, EDIT_FLIGHT_DATE.name, EDIT_FLIGHT_DATE.actions, EDIT_FLIGHT_DATE.steps, context)
-}
-
-function * mealSelectionOperation (context) {
-	const {SELECT_FLIGHT_MEAL} = OPERATIONS
-	yield operationFLow(mealSelection, SELECT_FLIGHT_MEAL.name, SELECT_FLIGHT_MEAL.actions, SELECT_FLIGHT_MEAL.steps, context)
-}
-
-export function* operationFLow (flow, operationName, actions, steps, context = []) {
-	yield put({type: 'start_operation', payload: {operation: operationName, step: steps.INITIAL, state: {}, context}})
-	const task = yield fork(flow, context)
-	const action = yield take([actions.success, actions.cancel, actions.failure])
-	if (action.type === actions.success) {
-		yield put({type: 'success_operation', payload: {context, operation: operationName}})
-		if (actions.successHandled) {
-			yield take(actions.successHandled)
-			return yield put({type: 'clean_success_operation', payload: {context, operation: operationName}})
-		} else return
-	}
-
-	if (action.type === actions.failure) {
-		yield put({type: 'failure_operation', payload: {context, operation: operationName, error: action.payload.error}})
-		yield take(actions.failureHandled)
-		return yield put({type: 'clean_failure_operation', payload: {context, operation: operationName}})
-	}
-
-	if (action.type === actions.cancel) {
-		yield cancel(task)
-		return yield put({type: 'cancel_operation', payload: {context, operation: operationName}})
-	}
-}
-
-const builder = (operation, context = []) => (step, state) => {
-	return {
-		type: 'update_operation_state',
-		payload: {
-			context,
-			operation,
-			state,
-			step,
-		},
 	}
 }
 
