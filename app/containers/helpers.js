@@ -1,14 +1,18 @@
-import {or, path, isEmpty} from 'ramda'
+import {or, path, when, isEmpty, always} from 'ramda'
 import { OPERATIONS } from '../services/flights/sagas'
+import {getRoute} from '../operations/opsReducers'
 
 export const getOperationInfo = (operationName, state, context = []) => {
-	const opPath = isEmpty(context) ? [operationName] : [...context, 'children', 'inProgress', operationName]
-	const operation = or(path(opPath, state.inProgress), {})
+	const contextObject = when(isEmpty, always({
+		inProgress: {},
+		failed: {},
+		succeed: {},
+	}))(path(getRoute(context), state))
 	return {
-		operation,
-		succeed: or(path(opPath, state.succeed), false),
-		failed: or(path(opPath, state.failed), false),
-		step: or(operation.step, ''),
+		operation: or(contextObject.inProgress[operationName], {}),
+		succeed: or(contextObject.succeed[operationName], false),
+		failed: or(contextObject.failed[operationName], false),
+		step: or(or(contextObject.inProgress[operationName], {}).step, ''),
 		steps: or(OPERATIONS[operationName].steps, {}),
 		actions: or(OPERATIONS[operationName].actions, {}),
 	}

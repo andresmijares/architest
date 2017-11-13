@@ -40,7 +40,7 @@ class App extends React.PureComponent {
 }
 
 const mapStateToProps = ({operations}) => {
-	const bookFlightOperation = or(operations.inProgress[OPERATIONS.BOOK_FLIGHT.name], {})
+	const bookFlightOperation = or(or(operations.inProgress, {})[OPERATIONS.BOOK_FLIGHT.name], {})
 	return {
 		bookFlight: {
 			...getOperationInfo(OPERATIONS.BOOK_FLIGHT.name, operations),
