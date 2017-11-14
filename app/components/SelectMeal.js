@@ -7,12 +7,11 @@ const SelectMeal = props => {
 	const {operation, actions, step, steps, triggerAction, succeed} = props
 	const {SELECT_FLIGHT_MEAL,	SELECT_FLIGHT_MEAL_CONFIRMATION} = steps
 	return (
-		<div>
+		<div className='select-flight-meal mug'>
 			{
 				equals(step, SELECT_FLIGHT_MEAL) &&
 				<div>
 					<div>
-						{`Step ${SELECT_FLIGHT_MEAL}`}
 						<button onClick={() => triggerAction(SELECT_FLIGHT_MEAL, {})}>{SELECT_FLIGHT_MEAL}</button>
 					</div>
 				</div>
@@ -21,7 +20,6 @@ const SelectMeal = props => {
 				equals(step, SELECT_FLIGHT_MEAL_CONFIRMATION) &&
 				<div>
 					<div>
-						{`Step ${SELECT_FLIGHT_MEAL_CONFIRMATION}`}
 						<button onClick={() => triggerAction(SELECT_FLIGHT_MEAL_CONFIRMATION, {})}>{SELECT_FLIGHT_MEAL_CONFIRMATION}</button>
 					</div>
 				</div>
@@ -35,7 +33,6 @@ const SelectMeal = props => {
 			}
 			{ !isEmpty(operation) &&
 			<div className='cancel'>
-				{`${actions.cancel}`}
 				<button onClick={() => triggerAction(actions.cancel, {})}>{actions.cancel}</button>
 			</div>
 			}

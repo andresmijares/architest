@@ -11,10 +11,10 @@ export const FlightEdition = props => {
 	const inProgress = !isEmpty(operation)
 	return (
 		<div>
-			<div className='commands'>
+			<div className='commands-container blue'>
+				<div className='commands'>
 				{ !inProgress &&
 				<div>
-					{`Start ${FLIGHT_EDITION.name}`}
 					<button onClick={() => triggerAction(FLIGHT_EDITION.name, {})}>{FLIGHT_EDITION.name}</button>
 				</div>
 				}
@@ -22,7 +22,6 @@ export const FlightEdition = props => {
 					equals(step, SELECT_FLIGHT) &&
 					<div>
 						<div>
-							{`Step ${SELECT_FLIGHT}`}
 							<button onClick={() => triggerAction(SELECT_FLIGHT, {})}>{SELECT_FLIGHT}</button>
 						</div>
 					</div>
@@ -30,9 +29,6 @@ export const FlightEdition = props => {
 				{
 					equals(step, SELECT_OPERATION) &&
 					<div>
-						<div>
-							{`Step ${SELECT_OPERATION}`}
-						</div>
 						<div>
 							<button onClick={() => triggerAction(EDIT_FLIGHT_DATE_OPERATION, {})}>{EDIT_FLIGHT_DATE_OPERATION}</button>
 							<button onClick={() => triggerAction(SELECT_FLIGHT_MEAL_OPERATION, {})}>{SELECT_FLIGHT_MEAL_OPERATION}</button>
@@ -53,12 +49,12 @@ export const FlightEdition = props => {
 				}
 				{ inProgress &&
 				<div className='cancel'>
-					{`${FLIGHT_EDITION.actions.cancel}`}
-					<button onClick={() => triggerAction(FLIGHT_EDITION.actions.cancel, {})}>{FLIGHT_EDITION.actions.cancel}</button>
+					<button onClick={() => triggerAction(FLIGHT_EDITION.actions.cancel, {})}>{'Cancel flight edition'}</button>
 				</div>
 				}
+				</div>
 			</div>
-			<div className='operation'>
+			<div className='operation green'>
 				{ operation && inProgress &&
 				<div>
 					<div>{`Step: ${operation.step}`}</div>

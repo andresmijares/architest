@@ -1,9 +1,43 @@
-.commands {
-
+.commands-container {
+	padding: 10%;
+	text-align: center;
+	margin: 8% 9% 3% 9%;
 }
 
-.cancel {}
+.commands {
+	height: 50%;
+}
 
 .operation {
+	padding: 14%;
+	text-align: center;
+	margin: 8% 9% 3% 9%;
 }
 
+.cancel {
+	padding: 4%;
+}
+
+.select-flight-meal {
+	background-color: ;
+}
+button {
+	margin: 1%;
+}
+
+.blue {
+	background-color: #033F63;
+}
+.gron {
+	background-color: #28666E;
+}
+.green {
+	background-color: #7C9885;
+}
+.mug {
+	background-color: #B5B682;
+}
+
+.yellow {
+	background-color: #FEDC97;
+}
