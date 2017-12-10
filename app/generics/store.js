@@ -1,7 +1,7 @@
 import { createStore, compose, applyMiddleware, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
-import rootSagas from '../services'
 import opsReducers from '../operations/opsReducers'
+import flightSagas from '../services/flights/publicOperations'
 const sagaMiddleware = createSagaMiddleware()
 
 const store = createStore(combineReducers({...opsReducers}), compose(
@@ -9,7 +9,7 @@ const store = createStore(combineReducers({...opsReducers}), compose(
 		window.devToolsExtension ? window.devToolsExtension() : (f) => f
 ))
 
-sagaMiddleware.run(rootSagas)
+sagaMiddleware.run(flightSagas)
 
 window.store = store
 export default store

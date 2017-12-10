@@ -1,4 +1,4 @@
-import { call, cancel, put, take, fork } from 'redux-saga/effects'
+import { cancel, put, take, fork } from 'redux-saga/effects'
 
 export function* operationFLow (flow, operationName, actions, steps, context = []) {
 	yield put({type: 'start_operation', payload: {operation: operationName, step: steps.INITIAL, state: {}, context}})

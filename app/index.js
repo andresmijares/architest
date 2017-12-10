@@ -6,7 +6,7 @@ import { Provider, connect } from 'react-redux'
 import ReactDOM from 'react-dom'
 import store from './generics/store'
 import { OPERATIONS } from './services/flights/sagas'
-import { or, equals, isEmpty } from 'ramda'
+import { or, equals } from 'ramda'
 import { Flights } from './components/Flights'
 import { FlightEdition } from './components/FlightEdition'
 import {getOperationInfo, triggerAction} from './containers/helpers'
@@ -30,10 +30,11 @@ class App extends React.PureComponent {
 			{...this.props.flightEdition}
 			triggerAction={triggerAction(dispatch)}/>
 
-		// <FlowTreeGraph step={or(this.props.bookFlight.bookFlightOperation.step, '')} steps={BOOK_FLIGHT.steps}/>
+		//{flightComponent}
 		return (
 			<div>
 				{flightEdition}
+				<FlowTreeGraph step={or(this.props.bookFlight.step, '')} steps={BOOK_FLIGHT.steps}/>
 			</div>
 		)
 	}

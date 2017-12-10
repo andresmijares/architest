@@ -27,7 +27,6 @@ export default {
 		resolve: {
 				alias: {
 						helpers: path.resolve(__dirname, 'app/helpers/'),
-						services: path.resolve(__dirname, 'app/services/'),
 						containers: path.resolve(__dirname, 'app/containers/'),
 						generics: path.resolve(__dirname, 'app/generics/'),
 						data: path.resolve(__dirname, 'app/data/'),

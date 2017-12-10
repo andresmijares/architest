@@ -19,7 +19,7 @@ export const Flights = props => {
 				{
 					equals(step, SELECT_DATES) &&
 					<div>
-						<div>
+			[			<div>
 							{`Step ${SELECT_DATES}`}
 							<button onClick={() => triggerAction(SELECT_DATES, {})}>{SELECT_DATES}</button>
 						</div>
