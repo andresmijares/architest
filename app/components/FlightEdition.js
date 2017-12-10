@@ -7,7 +7,8 @@ import SelectMealContainer from '../containers/SelectMealContainer'
 
 export const FlightEdition = props => {
 	const {step, steps, triggerAction, operation, FLIGHT_EDITION} = props
-	const {SELECT_FLIGHT, SELECT_OPERATION, EDIT_FLIGHT_DATE_OPERATION, SELECT_FLIGHT_MEAL_OPERATION} = steps
+	const {SELECT_FLIGHT, SELECT_OPERATION, EDIT_FLIGHT_DECISION} = steps
+	const {EDIT_FLIGHT_DATE_OPERATION, SELECT_FLIGHT_MEAL_OPERATION} = EDIT_FLIGHT_DECISION
 	const inProgress = !isEmpty(operation)
 	return (
 		<div>
@@ -38,7 +39,7 @@ export const FlightEdition = props => {
 				{
 					equals(step, EDIT_FLIGHT_DATE_OPERATION) &&
 						<div>
-							<EditFlight/>
+							<EditFlight context={[FLIGHT_EDITION.name]}/>
 						</div>
 				}
 				{

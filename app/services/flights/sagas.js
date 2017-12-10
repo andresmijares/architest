@@ -26,8 +26,10 @@ export const OPERATIONS = {
 			INITIAL: 'INITIAL',
 			SELECT_FLIGHT: 'SELECT_FLIGHT',
 			SELECT_OPERATION: 'SELECT_OPERATION',
-			EDIT_FLIGHT_DATE_OPERATION: 'EDIT_FLIGHT_DATE_OPERATION',
-			SELECT_FLIGHT_MEAL_OPERATION: 'SELECT_FLIGHT_MEAL_OPERATION',
+			EDIT_FLIGHT_DECISION: {
+				EDIT_FLIGHT_DATE_OPERATION: 'EDIT_FLIGHT_DATE_OPERATION',
+				SELECT_FLIGHT_MEAL_OPERATION: 'SELECT_FLIGHT_MEAL_OPERATION',
+			},
 			EDITION_CONFIRMATION: 'EDITION_CONFIRMATION',
 		},
 		actions: {
@@ -103,6 +105,7 @@ export function* editFlight () {
 	try {
 		const {FLIGHT_EDITION} = OPERATIONS
 		const {steps} = FLIGHT_EDITION
+		const userDecisionOption = steps.EDIT_FLIGHT_DECISION
 		const updateState = builder(FLIGHT_EDITION.name, [])
 
 		const flights = yield call(FlightService.getFlights)
@@ -113,13 +116,13 @@ export function* editFlight () {
 		yield take(steps.SELECT_FLIGHT)
 		yield put(updateState(steps.SELECT_OPERATION, {}))
 		while (true) {
-			const step = yield take([steps.EDIT_FLIGHT_DATE_OPERATION, steps.SELECT_FLIGHT_MEAL_OPERATION])
-			yield put(updateState(step.type, {}))
+			const decision = yield take(Object.keys(userDecisionOption))
+			yield put(updateState(decision.type, {}))
 			const context = [FLIGHT_EDITION.name]
-			if (step.type === steps.EDIT_FLIGHT_DATE_OPERATION) {
+			if (decision.type === userDecisionOption.EDIT_FLIGHT_DATE_OPERATION) {
 				yield dateEditionOperation(context)
 			}
-			if (step.type === steps.SELECT_FLIGHT_MEAL_OPERATION) {
+			if (decision.type === userDecisionOption.SELECT_FLIGHT_MEAL_OPERATION) {
 				yield mealSelectionOperation(context)
 			}
 			yield put(updateState(steps.SELECT_OPERATION, {}))
