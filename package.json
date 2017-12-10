@@ -117,6 +117,7 @@
 		"react-drag-and-drop": "^2.4.0",
 		"react-redux": "^5.0.6",
 		"react-router": "^4.2.0",
+		"react-tree-graph": "^2.0.0",
 		"redux": "^3.7.2",
 		"redux-saga": "^0.15.6"
 	}

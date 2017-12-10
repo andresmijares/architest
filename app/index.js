@@ -1,187 +1,87 @@
-import 'babel-polyfill' /* Support for IE11 */
+import 'babel-polyfill'
+/* Support for IE11 */
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Provider, connect } from 'react-redux'
 import ReactDOM from 'react-dom'
 import store from './generics/store'
-import List, {DetailUser} from 'components/List'
-import Groups, {DetailGroup} from 'components/Groups'
-import CreateUser from 'components/CreateUser'
-import 'components/style.css'
-import {isNil} from 'ramda'
+import { OPERATIONS } from './services/flights/sagas'
+import { or, equals } from 'ramda'
+import { Flights } from './components/Flights'
+import { FlightEdition } from './components/FlightEdition'
+import {getOperationInfo, triggerAction} from './containers/helpers'
+import { FlowTreeGraph } from './graph/tree'
 
 /*
-* If given more time, this should be separated into different
-* views instead a monolithic component
-* */
+ * If given more time, this should be separated into different
+ * views instead a monolithic component
+ * */
 class App extends React.PureComponent {
-		state = {
-				user: null,
-				group: null,
-				toggle: false,
-				form: {
-						groups: {},
-				},
-		}
-		componentDidMount () {
-				/* Simulates the application start */
-				this.props.dispatch({type: 'fetch_groups'})
-				this.props.dispatch({type: 'fetch_users'})
-		}
-		toggle () {
-				this.setState({toggle: !this.state.toggle})
-		}
-		change (obj) {
-				this.setState(obj)
-		}
-		removeGroupFromUser (user, group) {
-				this.props.dispatch({
-						type: 'removeGroup_users',
-						group,
-						user,
-				})
-		}
-		removeUser (e, user) {
-				e.stopPropagation()
-				this.props.dispatch({
-						type: 'remove_users',
-						user,
-				})
-		}
-		removeGroup (e, group) {
-				e.stopPropagation()
-				this.props.dispatch({
-						type: 'remove_groups',
-						group,
-				})
-		}
-		createUser (e) {
-				e.preventDefault()
-				let user = Object.assign({}, this.state.form, {
-						groups: Object.keys(this.state.form.groups),
-				})
-				this.props.dispatch({
-						type: 'create_users',
-						user,
-				})
-				this.resetForm(e)
-		}
-		handleForm (e) {
-				let form = Object.assign({}, this.state.form)
-				const field = e.target.name
-				form[field] = e.target.value
-				return this.setState({
-						form: form,
-				})
-		}
-		resetForm (e) {
-				e.preventDefault()
-				let form = {groups: {}}
-				this.setState({form})
-		}
-		handleCheckbox (fieldName) {
-				return (e) => {
-						let form = Object.assign({}, this.state.form)
-						let currentStatus = !form['groups'][fieldName]
-						if (currentStatus) {
-								form['groups'][fieldName] = currentStatus
-						} else {
-								delete form['groups'][fieldName]
-						}
-						form['groups'][fieldName]
-						this.setState({
-								form,
-						})
-				}
-		}
-		onDrop (group) {
-				return function ({users}) {
-						const user = this.props.users.data[users]
-						this.props.dispatch({
-								type: 'assignGroup_users',
-								user,
-								group,
-						})
-				}.bind(this)
-		}
-		render () {
-				const {users, groups, dispatch} = this.props
-				return (
-						<div className='container'>
-								{this.props.error && <div className='row'>
-									<div className='col-md-8'>
-										<div className='app__detail'>
-											{`${this.props.error}`}
-											<span className='user__delete' onClick={() => this.props.dispatch({type: 'error_message_dismiss'})}>{`dismiss`}</span>
-										</div>
-									</div>
-								</div>}
-								<div className='row'>
-										<div className='col-md-8'>
-										{this.state.toggle && <CreateUser
-												handleForm={this.handleForm.bind(this)}
-												handleCheckbox={this.handleCheckbox.bind(this)}
-												groups={this.props.groups}
-												form={this.state.form}
-												reset={this.resetForm.bind(this)}
-												submit={this.createUser.bind(this)} />}
-												<List change={this.change.bind(this)}
-												toggle={this.toggle.bind(this)}
-												title={`Users`}
-												users={users}
-												removeUser={this.removeUser.bind(this)} />
-										</div>
-										<div className='col-md-4'>
-												{!isNil(this.state.user) && <DetailUser
-														user={users.data[this.state.user.id]}
-														title={`User Detail`}
-														removeGroupFromUser={this.removeGroupFromUser.bind(this)}
-														groups={this.props.groups} />}
-												{(!isNil(this.state.group) && !isNil(this.props.groups.data[this.state.group.id])) && <DetailGroup
-														group={groups.data[this.state.group.id] || {}}
-														title={this.state.group.name}
-														groups={groups}
-														dispatch={dispatch}
-														deleteGroup={this.removeGroup.bind(this)}
-														removeGroupFromUser={this.removeGroupFromUser.bind(this)}
-														onDrop={this.onDrop.bind(this)}
-														users={users} />}
-												<Groups change={this.change.bind(this)} title={`Groups`} groups={groups}/>
-										</div>
-								</div>
-						</div>
-			)
-		}
+	render () {
+		const {dispatch} = this.props
+		const {BOOK_FLIGHT, FLIGHT_EDITION} = OPERATIONS
+		const flightComponent = <Flights
+			BOOK_FLIGHT={BOOK_FLIGHT}
+			{...this.props.bookFlight}
+			triggerAction={triggerAction(dispatch)}/>
+
+		const flightEdition = <FlightEdition
+			FLIGHT_EDITION={FLIGHT_EDITION}
+			{...this.props.flightEdition}
+			triggerAction={triggerAction(dispatch)}/>
+
+		//{flightComponent}
+		return (
+			<div>
+				{flightEdition}
+				<FlowTreeGraph step={or(this.props.bookFlight.step, '')} steps={BOOK_FLIGHT.steps}/>
+			</div>
+		)
+	}
 }
 
-const mapStateToProps = ({users, groups, error}) => ({
-		users: {
-				data: users.data,
-				ids: users.ids,
+const mapStateToProps = ({operations}) => {
+	const bookFlightOperation = or(or(operations.inProgress, {})[OPERATIONS.BOOK_FLIGHT.name], {})
+	return {
+		bookFlight: {
+			...getOperationInfo(OPERATIONS.BOOK_FLIGHT.name, operations),
+			locations: equals(bookFlightOperation.step, OPERATIONS.BOOK_FLIGHT.steps.SELECT_ORIGIN) ? bookFlightOperation.state.locations : [],
 		},
-		groups: {
-				data: groups.data,
-				ids: groups.ids,
+		flightEdition: {
+			...getOperationInfo(OPERATIONS.FLIGHT_EDITION.name, operations),
 		},
-		error,
-})
+	}
+}
 
 const AppWithState = connect(mapStateToProps)(App)
 
 const render = () => {
-		ReactDOM.render(
+	ReactDOM.render(
 		<Provider store={store}>
-					<AppWithState />
-				</Provider>,
-				document.getElementById('app')
-		)
+			<AppWithState />
+		</Provider>,
+		document.getElementById('app')
+	)
 }
 
 App.propTypes = {
-		dispatch: PropTypes.func.isRequired,
-		users: PropTypes.object.isRequired,
-		groups: PropTypes.object.isRequired,
-		error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
+	dispatch: PropTypes.func.isRequired,
+	bookFlight: PropTypes.shape({
+		operation: PropTypes.object,
+		locations: PropTypes.any,
+		succeed: PropTypes.object,
+		failed: PropTypes.object,
+		step: PropTypes.string,
+		steps: PropTypes.string,
+	}),
+	flightEdition: PropTypes.shape({
+		operation: PropTypes.object,
+		succeed: PropTypes.object,
+		failed: PropTypes.object,
+		step: PropTypes.string,
+		steps: PropTypes.string,
+	}),
+
 }
 
 /* prevent FOUC https://stackoverflow.com/a/43902734 */
