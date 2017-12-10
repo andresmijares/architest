@@ -1,20 +1,6 @@
 import { flatten, omit, append, assocPath, dissocPath, isEmpty, path, or } from 'ramda'
 import { uuid } from './helpers'
 
-export const OPERATIONS = {
-	CREATE_SHIFT: {
-		name: 'CREATE_SHIFT',
-		steps: {
-			SELECT_GROUP: 'SELECT_GROUP',
-			SET_INFO: 'SET_INFO',
-		},
-		cancelAction: 'CREATE_SHIFT_CANCEL',
-	},
-	REMOVE_SHIFTS: 'REMOVE_SHIFTS',
-	ASSIGN_SPECIALIST: 'ASSIGN_SPECIALIST',
-	REMOVE_SPECIALIST: 'REMOVE_SPECIALISTS',
-}
-
 const stateObject = {
 	inProgress: {},
 	failed: {},
@@ -30,7 +16,6 @@ export const getRoute = (context) => {
 }
 
 /**
- * UPDATE STEP?!
  * @param state
  * @param action
  * @return {*}

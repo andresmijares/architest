@@ -58,7 +58,7 @@ export const FlightEdition = props => {
 				{ operation && inProgress &&
 				<div>
 					<div>{`Step: ${operation.step}`}</div>
-					<div>{`State: ${JSON.stringify(operation.state)}`}</div>
+					<div>{`State: ${JSON.stringify(operation, null, 4)}`}</div>
 				</div>
 				}
 			</div>
